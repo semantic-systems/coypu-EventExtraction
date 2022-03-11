@@ -71,7 +71,8 @@ class Instantiator(object):
 if __name__ == '__main__':
     tweet = "You are on fire, run!"
     event_detector_model_path = "stores/models/xxx"
+    output_file_path = "outputs/output.json"
     event_argument_extractor_model_path = None
     instantiator = Instantiator(event_detector_model_path, event_argument_extractor_model_path)
     event_extractor = instantiator()
-    output = event_extractor.infer(tweet)
+    output = event_extractor.infer(tweet, output_file_path)
