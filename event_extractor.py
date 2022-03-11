@@ -47,7 +47,7 @@ class EventExtractor(object):
 class Instantiator(object):
     def __init__(self,
                  event_detector_model_path: str,
-                 event_argument_extractor_model_path: Optional[str] = None
+                 event_argument_extractor_model_path: str
                  ):
         self.extractor = None
         assert Path(event_detector_model_path).exists()
