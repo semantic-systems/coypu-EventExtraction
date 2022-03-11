@@ -1,3 +1,1 @@
-from models.SequenceClassificationBase import SequenceClassification
-from models.SingleLabelSequenceClassification import SingleLabelSequenceClassification
-from models.PrototypicalNetworks import PrototypicalNetworks
+from models.event_detection import EventDetector
