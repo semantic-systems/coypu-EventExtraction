@@ -2,7 +2,11 @@
 
 class BaseComponent(object):
     def __init__(self):
-        self.name = self.__name__
+        self.version = self.__version__
 
     def forward(self, tweet: str):
+        raise NotImplementedError
+
+    @property
+    def __version__(self):
         raise NotImplementedError

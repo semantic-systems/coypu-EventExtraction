@@ -7,9 +7,10 @@ from dataclasses import asdict
 from typing import Optional, Union
 
 from models.event_argument_extraction import OpenIEExtractor
+from models.event_detection.EventDetector import EventDetector
 from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput
 
-EventDetectorType = Union[torch.nn.Module]
+EventDetectorType = Union[torch.nn.Module, EventDetector]
 EventArgumentExtractorType = Union[torch.nn.Module, OpenIEExtractor]
 
 
@@ -52,17 +53,18 @@ class Instantiator(object):
         self.extractor = None
         assert Path(event_detector_model_path).exists()
         self.event_detector: EventDetectorType = self.load_torch_model(event_detector_model_path)
-        if Path(event_argument_extractor_model_path).exists():
-            self.event_argument_extractor: EventArgumentExtractorType = self.load_torch_model(
-                event_argument_extractor_model_path)
-        elif event_argument_extractor_model_path == "openie":
-            self.event_argument_extractor = OpenIEExtractor()
-        else:
-            raise ValueError("Please provide a valid event_argument_extractor_model_path.")
+        self.event_argument_extractor = None
+        #if Path(event_argument_extractor_model_path).exists():
+        #    self.event_argument_extractor: EventArgumentExtractorType = self.load_torch_model(
+        #        event_argument_extractor_model_path)
+        #elif event_argument_extractor_model_path == "openie":
+        #    self.event_argument_extractor = OpenIEExtractor()
+        #else:
+        #    raise ValueError("Please provide a valid event_argument_extractor_model_path.")
 
     @staticmethod
-    def load_torch_model(path: str) -> torch.nn.Module:
-        return torch.jit.load(path)
+    def load_torch_model(path: str) -> EventDetector:
+        return EventDetector(path)
 
     def __call__(self) -> EventExtractor:
         return EventExtractor(self.event_detector, self.event_argument_extractor)
@@ -70,7 +72,7 @@ class Instantiator(object):
 
 if __name__ == '__main__':
     tweet = "You are on fire, run!"
-    event_detector_model_path = "stores/models/xxx"
+    event_detector_model_path = "stores/models/pretrained_event_detector.pt"
     output_file_path = "outputs/output.json"
     event_argument_extractor_model_path = "openie"
     instantiator = Instantiator(event_detector_model_path, event_argument_extractor_model_path)
