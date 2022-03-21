@@ -1,9 +1,8 @@
 from schemes import EventDetectorOutput
+from models import BaseComponent
 
 
-class EventDetector(object):
-    def __init__(self):
-        self.name = self.__name__
+class EventDetector(BaseComponent):
 
     def forward(self, tweet: str) -> EventDetectorOutput:
         raise NotImplementedError

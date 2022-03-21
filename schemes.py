@@ -3,14 +3,14 @@ from dataclasses import dataclass
 
 
 @dataclass
-class EventDetectorOutput():
+class EventDetectorOutput:
     tweet: str
     event_type: str
     wikidata_links: Dict[str, str]
 
 
 @dataclass
-class EventArgumentExtractorOutput():
+class EventArgumentExtractorOutput:
     tweet: str
     event_arguments: Set[str]
     event_graph: Set[List[str]]
@@ -18,7 +18,7 @@ class EventArgumentExtractorOutput():
 
 
 @dataclass
-class EventExtractorOutput():
+class EventExtractorOutput:
     tweet: str
     event_type: str
     event_arguments: Set[str]

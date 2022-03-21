@@ -1,9 +1,9 @@
 from schemes import EventArgumentExtractorOutput
+from models import BaseComponent
 
 
-class OpenIEExtractor(object):
-    def __init__(self):
-        self.name = self.__name__
+class OpenIEExtractor(BaseComponent):
+        ## inherit constructor (__init__) from BaseComponent
         ## instantiate your extractor here
 
     def forward(self, tweet: str) -> EventArgumentExtractorOutput:
