@@ -19,7 +19,6 @@ datasets==1.15.1
 dill==0.3.4
 docker==5.0.3
 entrypoints==0.4
--e git+https://github.com/semantic-systems/event-extraction.git@9f942031feb76bd78a4b164595e1842488d85ff0#egg=event_extraction
 filelock==3.6.0
 Flask==2.0.3
 fonttools==4.31.1
