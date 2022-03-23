@@ -12,8 +12,8 @@ class EventDetectorOutput:
 @dataclass
 class EventArgumentExtractorOutput:
     tweet: str
-    event_arguments: Set[str]
-    event_graph: Set[List[str]]
+    event_arguments: List[str]
+    event_graph: List[List[str]]
     wikidata_links: Dict[str, str]
 
 
@@ -21,6 +21,7 @@ class EventArgumentExtractorOutput:
 class EventExtractorOutput:
     tweet: str
     event_type: str
-    event_arguments: Set[str]
-    event_graph: Set[List[str]]
+    event_arguments: List[str]
+    event_graph: List[List[str]]
     wikidata_links: Dict[str, str]
+    timestamp: str

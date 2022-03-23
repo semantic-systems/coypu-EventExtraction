@@ -1,6 +1,7 @@
 .idea/
 outputs/
 mlruns/
+src/
 *.pt
 .DS_Store
 *.lock
