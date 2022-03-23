@@ -10,6 +10,7 @@ from typing import Union
 
 from models.event_argument_extraction import OpenIEExtractor, EventArgumentExtractor
 from models.event_detection.EventDetector import EventDetector
+from parser import parse
 from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput
 
 EventDetectorType = Union[torch.nn.Module, EventDetector]
@@ -19,7 +20,7 @@ EventArgumentExtractorType = Union[torch.nn.Module, OpenIEExtractor, EventArgume
 class EventExtractor(object):
     def __init__(self,
                  event_detector: EventDetectorType,
-                 event_argument_extractor: EventArgumentExtractorType
+                 event_argument_extractor: EventArgumentExtractorType,
                  ):
         self.event_detector = event_detector
         self.event_argument_extractor = event_argument_extractor
@@ -41,10 +42,14 @@ class EventExtractor(object):
     def extract_per_batch(self, tweets: List[str]) -> List[EventExtractorOutput]:
         pass
 
-    def infer(self, tweet: str, output_file_path: str) -> EventExtractorOutput:
-        self.setup(output_file_path)
+    def infer(self, tweet: str) -> EventExtractorOutput:
         output: EventExtractorOutput = self.extract_per_tweet(tweet)
-        output_json_path = Path(output_file_path).joinpath("output.json")
+        self.write_json(output)
+        return output
+
+    @staticmethod
+    def write_json(output: EventExtractorOutput):
+        output_json_path = Path("outputs").joinpath("output.json")
         if Path(output_json_path).exists():
             with open(output_json_path, 'r+', encoding='utf-8') as o:
                 output_json = json.load(o)
@@ -54,12 +59,6 @@ class EventExtractor(object):
         else:
             with open(output_json_path, 'w', encoding='utf-8') as o:
                 json.dump([asdict(output)], o, indent=4, sort_keys=True)
-        return output
-
-    @staticmethod
-    def setup(path: str):
-        if not Path(path).exists():
-            Path(path).mkdir()
 
     @staticmethod
     def get_data_time() -> str:
@@ -73,6 +72,7 @@ class Instantiator(object):
                  event_detector_model_path: str,
                  event_argument_extractor_model_path: str
                  ):
+        self.set_up_directory()
         self.extractor = None
         assert Path(event_detector_model_path).exists()
         self.event_detector: EventDetectorType = self.load_event_detector(event_detector_model_path)
@@ -93,15 +93,28 @@ class Instantiator(object):
     def load_event_argument_extractor(path: str) -> EventArgumentExtractor:
         return EventArgumentExtractor(path)
 
+    @staticmethod
+    def set_up_directory():
+        if not Path("stores/models").exists():
+            Path("stores/models").mkdir()
+        if not Path("outputs").exists():
+            Path("outputs").mkdir()
+
     def __call__(self) -> EventExtractor:
         return EventExtractor(self.event_detector, self.event_argument_extractor)
 
 
 if __name__ == '__main__':
-    tweet = "You are on fire, run!"
-    event_detector_model_path = "stores/models/pretrained_event_detector.pt"
-    output_file_path = "./outputs/"
-    event_argument_extractor_model_path = "openie"
+    args = parse()
+    event_detector_model_path = args.event_detector_path
+    event_argument_extractor_model_path = args.event_argument_extractor_path
     instantiator = Instantiator(event_detector_model_path, event_argument_extractor_model_path)
     event_extractor = instantiator()
-    output = event_extractor.infer(tweet, output_file_path)
+    while True:
+        tweet = input('Please enter a tweet: ')
+        output = event_extractor.infer(tweet)
+        print(f""
+              f"Event type: {output.event_type}\n"
+              f"Event arguments: {output.event_arguments}\n"
+              f"Event graph: {output.event_graph}\n"
+              f"Wikidata links: {output.wikidata_links}\n")
