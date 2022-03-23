@@ -1,1 +1,1 @@
-from models.event_detection import EventDetector
+from models.event_detection.EventDetector import EventDetector
