@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from schemes import EventDetectorOutput
 from models import BaseComponent
 from models.event_detection.src.models.SingleLabelSequenceClassification import SingleLabelSequenceClassification
+from transformers import logging
+logging.set_verbosity_error()
 
 
 @dataclass
@@ -38,9 +40,9 @@ class EventDetector(BaseComponent):
         input_feature: InputFeature = InputFeature(input_ids=input_ids, attention_mask=attention_masks, labels=labels)
         output: SingleLabelClassificationForwardOutput = self.model.forward(input_feature)
         prediction = output.prediction_logits.argmax(1).item()
-        event_type = self.index_label_map[str(prediction)]  # TODO: get label index map into model class
+        event_type = self.index_label_map[str(prediction)]
         return EventDetectorOutput(tweet=tweet, event_type=event_type, wikidata_links={event_type: "..."})
 
     @property
     def __version__(self):
-        return "0.0.1"
+        return "1.0.0"

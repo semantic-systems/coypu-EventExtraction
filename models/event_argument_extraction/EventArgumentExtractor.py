@@ -34,4 +34,4 @@ class EventArgumentExtractor(BaseComponent):
 
     @property
     def __version__(self):
-        return "0.0.1"
+        return "1.0.0"
