@@ -13,6 +13,6 @@ def parse():
     parser.add_argument("-eae", "--event_argument_extractor_path",
                         help='Path to a pretrained event argument extractor checkpoint.'
                              'Alternatively, you can use OpenIEExtractor which is a public package.',
-                        default="openie")
+                        default="models/event_argument_extraction/")
     parser.parse_args()
     return parser.parse_args()
