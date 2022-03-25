@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from schemes import EventDetectorOutput
 from models import BaseComponent
 from models.event_detection.src.models.SingleLabelSequenceClassification import SingleLabelSequenceClassification
+from stores.ontologies.event_type_wikidata_links_trecis import EVENT_TYPE_WIKIDATA_LINKS
 from transformers import logging
 logging.set_verbosity_error()
 
@@ -41,7 +42,8 @@ class EventDetector(BaseComponent):
         output: SingleLabelClassificationForwardOutput = self.model.forward(input_feature)
         prediction = output.prediction_logits.argmax(1).item()
         event_type = self.index_label_map[str(prediction)]
-        return EventDetectorOutput(tweet=tweet, event_type=event_type, wikidata_links={event_type: "..."})
+        wikidata_link = EVENT_TYPE_WIKIDATA_LINKS.get(event_type)
+        return EventDetectorOutput(tweet=tweet, event_type=event_type, wikidata_links={event_type: wikidata_link})
 
     @property
     def __version__(self):
