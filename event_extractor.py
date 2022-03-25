@@ -106,9 +106,9 @@ class Instantiator(object):
     @staticmethod
     def set_up_directory():
         if not Path("stores/models").exists():
-            Path("stores/models").mkdir()
+            Path("stores/models").mkdir(parents=True, exist_ok=False)
         if not Path("outputs").exists():
-            Path("outputs").mkdir()
+            Path("outputs").mkdir(parents=True, exist_ok=False)
 
     def __call__(self) -> EventExtractor:
         return EventExtractor(self.event_detector, self.event_argument_extractor)
