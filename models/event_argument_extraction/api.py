@@ -1,7 +1,8 @@
 # Based on the script from https://github.com/zxybazh/Wikidata-Entity-Query
-import json, urllib # Needed libs
+import json, urllib
 from pprint import pprint # Not necessary
 import urllib.request
+
 
 def entity2id(q):
 	# Get wikidata id from wikidata api

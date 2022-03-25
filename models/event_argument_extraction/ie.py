@@ -13,7 +13,6 @@ class txt2graph(object):
         self.linker = entLink()
 
     def AnnoText(self, txt, save = False):
-
         triples = list()
         for triple in self.client.annotate(txt):
             sublink, oblink = self.linker.link(triple['subject']), self.linker.link(triple['object'])
@@ -31,7 +30,6 @@ class txt2graph(object):
         return triples
 
 
-
 class entLink(object):
     def __init__(self):
         init()   
@@ -39,7 +37,6 @@ class entLink(object):
     def link(self, text):
         return Related(text)
 
-        
 
 if __name__ == '__main__':
     # Initialie a imformation extraction module.

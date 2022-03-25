@@ -30,13 +30,23 @@ class EventExtractor(object):
         event_type, event_type_wikidata_links = event_detector_output.event_type, event_detector_output.wikidata_links
         event_argument_extractor_output: EventArgumentExtractorOutput = self.event_argument_extractor.forward(tweet)
         event_arguments, event_graph, event_argument_wikidata_links = event_argument_extractor_output.event_arguments, event_argument_extractor_output.event_graph, event_argument_extractor_output.wikidata_links
+
+        wikidata_links = None
+        for link in [event_type_wikidata_links, event_argument_wikidata_links]:
+            if link is None:
+                pass
+            elif wikidata_links is None:
+                wikidata_links = link
+            else:
+                wikidata_links = {**event_type_wikidata_links, **event_argument_wikidata_links}
+
         return EventExtractorOutput(
             tweet=tweet,
             event_type=event_type,
-            event_arguments= event_arguments,
+            event_arguments=event_arguments,
             event_graph=event_graph,
-            wikidata_links={**event_type_wikidata_links, **event_argument_wikidata_links},
-            timestamp=self.get_data_time()
+            wikidata_links=wikidata_links,
+            timestamp=self.get_date_time()
         )
 
     def extract_per_batch(self, tweets: List[str]) -> List[EventExtractorOutput]:
@@ -61,7 +71,7 @@ class EventExtractor(object):
                 json.dump([asdict(output)], o, indent=4, sort_keys=True)
 
     @staticmethod
-    def get_data_time() -> str:
+    def get_date_time() -> str:
         now = datetime.now()
         dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
         return dt_string
