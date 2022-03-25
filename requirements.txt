@@ -45,5 +45,3 @@ typing-extensions==3.10.0.2
 urllib3==1.26.8
 wget==3.2
 zipp==3.7.0
-stanford_openie
-gdown
