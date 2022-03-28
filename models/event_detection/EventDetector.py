@@ -1,3 +1,4 @@
+import os
 import torch
 from torch import tensor
 from typing import Optional, Tuple
@@ -8,6 +9,9 @@ from models.event_detection.src.models.SingleLabelSequenceClassification import 
 from stores.ontologies.event_type_wikidata_links_trecis import EVENT_TYPE_WIKIDATA_LINKS
 from transformers import logging
 logging.set_verbosity_error()
+
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 @dataclass
@@ -28,7 +32,7 @@ class SingleLabelClassificationForwardOutput:
 class EventDetector(BaseComponent):
     def __init__(self, path_to_pretrained_model: str):
         super(EventDetector).__init__()
-        checkpoint = torch.load(path_to_pretrained_model)
+        checkpoint = torch.load(path_to_pretrained_model, map_location=torch.device('cpu'))
         self.model = SingleLabelSequenceClassification(checkpoint['config'])
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.index_label_map = checkpoint['index_label_map']
