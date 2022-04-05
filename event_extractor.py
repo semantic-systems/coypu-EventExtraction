@@ -1,17 +1,15 @@
-from datetime import datetime
-
 import torch
-import json
+import yaml
 
 from pathlib import Path
-from typing import List
-from dataclasses import asdict
-from typing import Union
+from typing import List, Dict, Union
+from datetime import datetime
 
 from models.event_argument_extraction import OpenIEExtractor, EventArgumentExtractor
 from models.event_detection.EventDetector import EventDetector
 from parser import parse
-from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput
+from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput, Config, \
+    ModelConfig, PublicMetaConfig, LocalMetaConfig
 
 EventDetectorType = Union[torch.nn.Module, EventDetector]
 EventArgumentExtractorType = Union[torch.nn.Module, OpenIEExtractor, EventArgumentExtractor]
@@ -54,21 +52,7 @@ class EventExtractor(object):
 
     def infer(self, tweet: str) -> EventExtractorOutput:
         output: EventExtractorOutput = self.extract_per_tweet(tweet)
-        self.write_json(output)
         return output
-
-    @staticmethod
-    def write_json(output: EventExtractorOutput):
-        output_json_path = Path("outputs").joinpath("output.json")
-        if Path(output_json_path).exists():
-            with open(output_json_path, 'r+', encoding='utf-8') as o:
-                output_json = json.load(o)
-                output_json.append(asdict(output))
-                o.seek(0)
-                json.dump(output_json, o, indent=4, sort_keys=True)
-        else:
-            with open(output_json_path, 'w', encoding='utf-8') as o:
-                json.dump([asdict(output)], o, indent=4, sort_keys=True)
 
     @staticmethod
     def get_date_time() -> str:
@@ -79,21 +63,41 @@ class EventExtractor(object):
 
 class Instantiator(object):
     def __init__(self,
-                 event_detector_model_path: str,
-                 event_argument_extractor_model_path: str
+                 config: Config
                  ):
-        self.set_up_directory()
+        self.config = config
         self.extractor = None
-        assert Path(event_detector_model_path).exists()
-        self.event_detector: EventDetectorType = self.load_event_detector(event_detector_model_path)
+        self.event_detector: EventDetectorType = self.load_event_detector(self.event_type_detector_path)
         self.event_argument_extractor = None
-        if Path(event_argument_extractor_model_path).exists():
+        if Path(self.event_argument_extractor_path).exists():
             self.event_argument_extractor: EventArgumentExtractorType = self.load_event_argument_extractor(
-                event_argument_extractor_model_path)
-        elif event_argument_extractor_model_path == "openie":
+                self.event_argument_extractor_path)
+        elif self.event_argument_extractor_path == "openie":
             self.event_argument_extractor = OpenIEExtractor()
         else:
             raise ValueError("Please provide a valid event_argument_extractor_model_path.")
+
+    @property
+    def event_type_detector_path(self) -> str:
+        if self.config.event_type_detector.type == "custom":
+            path = str(Path(self.config.event_type_detector.meta.directory_to_store)
+                       .joinpath("pretrained_event_detector.pt").absolute())
+        elif self.config.event_type_detector.type == "public":
+            path = self.config.event_type_detector.meta.package
+        else:
+            raise ValueError("Please provide the model type as custom or public.")
+        return path
+
+    @property
+    def event_argument_extractor_path(self) -> str:
+        if self.config.event_argument_extractor.type == "custom":
+            path = str(Path(self.config.event_argument_extractor.meta.directory_to_store)
+                       .joinpath("pretrained_event_detector.pt").absolute())
+        elif self.config.event_argument_extractor.type == "public":
+            path = self.config.event_argument_extractor.meta.package
+        else:
+            raise ValueError("Please provide the model type as custom or public.")
+        return path
 
     @staticmethod
     def load_event_detector(path: str) -> EventDetector:
@@ -103,22 +107,39 @@ class Instantiator(object):
     def load_event_argument_extractor(path: str) -> EventArgumentExtractor:
         return EventArgumentExtractor(path)
 
-    @staticmethod
-    def set_up_directory():
-        if not Path("stores/models").exists():
-            Path("stores/models").mkdir(parents=True, exist_ok=False)
-        if not Path("outputs").exists():
-            Path("outputs").mkdir(parents=True, exist_ok=False)
-
     def __call__(self) -> EventExtractor:
         return EventExtractor(self.event_detector, self.event_argument_extractor)
 
 
+def validate(config: Dict) -> Config:
+    empty_config = {}
+    keys = config.keys()
+    for key in keys:
+        if config.get(key, None) is not None:
+            if config.get(key).get("type") == "custom":
+                meta_config = LocalMetaConfig(**config.get(key).get("meta"))
+                model_config = ModelConfig(type="custom", meta=meta_config)
+            elif config.get(key).get("type") == "public":
+                meta_config = PublicMetaConfig(**config.get(key).get("meta"))
+                model_config = ModelConfig(type="public", meta=meta_config)
+            else:
+                raise ValueError("Please select type from custom or public.")
+            empty_config[key] = model_config
+        else:
+            empty_config[key] = None
+    return Config(**empty_config)
+
+
 if __name__ == '__main__':
     args = parse()
-    event_detector_model_path = args.event_detector_path
-    event_argument_extractor_model_path = args.event_argument_extractor_path
-    instantiator = Instantiator(event_detector_model_path, event_argument_extractor_model_path)
+    config_path: str = str(Path(args.config).absolute())
+    with open(config_path, "r") as f:
+        try:
+            config: Dict = yaml.safe_load(f)
+            config: Config = validate(config)
+        except yaml.YAMLError as exc:
+            print(exc)
+    instantiator = Instantiator(config)
     event_extractor = instantiator()
     while True:
         tweet = input('Please enter a tweet: ')

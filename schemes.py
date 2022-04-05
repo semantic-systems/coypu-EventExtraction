@@ -16,9 +16,9 @@ class ModelConfig:
 
 @dataclass
 class Config:
-    event_type_detector: ModelConfig
-    event_argument_extractor: ModelConfig
-    event_extractor: Optional[ModelConfig]
+    event_type_detector: Optional[ModelConfig] = None
+    event_argument_extractor: Optional[ModelConfig] = None
+    event_extractor: Optional[ModelConfig] = None
 
 
 @dataclass
