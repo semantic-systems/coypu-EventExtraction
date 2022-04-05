@@ -134,11 +134,8 @@ if __name__ == '__main__':
     args = parse()
     config_path: str = str(Path(args.config).absolute())
     with open(config_path, "r") as f:
-        try:
-            config: Dict = yaml.safe_load(f)
-            config: Config = validate(config)
-        except yaml.YAMLError as exc:
-            print(exc)
+        config: Dict = yaml.safe_load(f)
+        config: Config = validate(config)
     instantiator = Instantiator(config)
     event_extractor = instantiator()
     while True:

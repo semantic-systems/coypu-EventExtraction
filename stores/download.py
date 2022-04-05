@@ -21,7 +21,7 @@ def parse():
                         help='Path to a directory where the model checkpoint is saved.'
                              'This should NOT be located within this repo because we want to store big files withinin '
                              '/data',
-                        default="../data")
+                        default="./../data")
     parser.parse_args()
     return parser.parse_args()
 
