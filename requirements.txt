@@ -5,7 +5,6 @@ pip-chill
 pyopenssl
 pysocks
 pytest
-stanford-openie
 torchaudio
 torchvision
 transformers

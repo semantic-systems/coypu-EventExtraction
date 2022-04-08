@@ -40,7 +40,5 @@ class EventArgumentExtractorOutput:
 class EventExtractorOutput:
     tweet: str
     event_type: Optional[str]
-    event_arguments: Optional[List[str]]
-    event_graph: Optional[List[List[str]]]
     wikidata_links: Optional[Dict[str, str]]
     timestamp: str

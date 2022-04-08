@@ -2,7 +2,7 @@ import torch
 import yaml
 
 from pathlib import Path
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 from datetime import datetime
 
 from models.event_argument_extraction import OpenIEExtractor, EventArgumentExtractor
@@ -18,7 +18,7 @@ EventArgumentExtractorType = Union[torch.nn.Module, OpenIEExtractor, EventArgume
 class EventExtractor(object):
     def __init__(self,
                  event_detector: EventDetectorType,
-                 event_argument_extractor: EventArgumentExtractorType,
+                 event_argument_extractor: Optional[EventArgumentExtractorType] = None,
                  ):
         self.event_detector = event_detector
         self.event_argument_extractor = event_argument_extractor
@@ -26,23 +26,21 @@ class EventExtractor(object):
     def extract_per_tweet(self, tweet: str) -> EventExtractorOutput:
         event_detector_output: EventDetectorOutput = self.event_detector.forward(tweet)
         event_type, event_type_wikidata_links = event_detector_output.event_type, event_detector_output.wikidata_links
-        event_argument_extractor_output: EventArgumentExtractorOutput = self.event_argument_extractor.forward(tweet)
-        event_arguments, event_graph, event_argument_wikidata_links = event_argument_extractor_output.event_arguments, event_argument_extractor_output.event_graph, event_argument_extractor_output.wikidata_links
+        # event_argument_extractor_output: EventArgumentExtractorOutput = self.event_argument_extractor.forward(tweet)
+        # event_arguments, event_graph, event_argument_wikidata_links = event_argument_extractor_output.event_arguments, event_argument_extractor_output.event_graph, event_argument_extractor_output.wikidata_links
 
         wikidata_links = None
-        for link in [event_type_wikidata_links, event_argument_wikidata_links]:
+        for link in [event_type_wikidata_links]:
             if link is None:
                 pass
             elif wikidata_links is None:
                 wikidata_links = link
             else:
-                wikidata_links = {**event_type_wikidata_links, **event_argument_wikidata_links}
+                wikidata_links = {**event_type_wikidata_links}
 
         return EventExtractorOutput(
             tweet=tweet,
             event_type=event_type,
-            event_arguments=event_arguments,
-            event_graph=event_graph,
             wikidata_links=wikidata_links,
             timestamp=self.get_date_time()
         )
@@ -69,13 +67,13 @@ class Instantiator(object):
         self.extractor = None
         self.event_detector: EventDetectorType = self.load_event_detector(self.event_type_detector_path)
         self.event_argument_extractor = None
-        if Path(self.event_argument_extractor_path).exists():
-            self.event_argument_extractor: EventArgumentExtractorType = self.load_event_argument_extractor(
-                self.event_argument_extractor_path)
-        elif self.event_argument_extractor_path == "openie":
-            self.event_argument_extractor = OpenIEExtractor()
-        else:
-            raise ValueError("Please provide a valid event_argument_extractor_model_path.")
+        # if Path(self.event_argument_extractor_path).exists():
+        #     self.event_argument_extractor: EventArgumentExtractorType = self.load_event_argument_extractor(
+        #         self.event_argument_extractor_path)
+        # elif self.event_argument_extractor_path == "openie":
+        #     self.event_argument_extractor = OpenIEExtractor()
+        # else:
+        #     raise ValueError("Please provide a valid event_argument_extractor_model_path.")
 
     @property
     def event_type_detector_path(self) -> str:
@@ -143,6 +141,4 @@ if __name__ == '__main__':
         output = event_extractor.infer(tweet)
         print(f""
               f"Event type: {output.event_type}\n"
-              f"Event arguments: {output.event_arguments}\n"
-              f"Event graph: {output.event_graph}\n"
               f"Wikidata links: {output.wikidata_links}\n")
