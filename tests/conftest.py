@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pytest
 
-from models.event_argument_extraction import OpenIEExtractor
 from models.event_detection import EventDetector
 from event_extractor import EventExtractor
 
@@ -45,11 +44,6 @@ def invalid_pretrained_event_argument_extractor_path(pretrained_model_output_pat
 @pytest.fixture()
 def event_type_detector_instance(valid_pretrained_event_detector_path):
     return EventDetector(valid_pretrained_event_detector_path)
-
-
-@pytest.fixture()
-def event_argument_extractor_openie_instance():
-    return OpenIEExtractor()
 
 
 @pytest.fixture()

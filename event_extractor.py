@@ -26,17 +26,17 @@ class EventExtractor(object):
     def extract_per_tweet(self, tweet: str) -> EventExtractorOutput:
         event_detector_output: EventDetectorOutput = self.event_detector.forward(tweet)
         event_type, event_type_wikidata_links = event_detector_output.event_type, event_detector_output.wikidata_links
-        # event_argument_extractor_output: EventArgumentExtractorOutput = self.event_argument_extractor.forward(tweet)
-        # event_arguments, event_graph, event_argument_wikidata_links = event_argument_extractor_output.event_arguments, event_argument_extractor_output.event_graph, event_argument_extractor_output.wikidata_links
+        event_argument_extractor_output: EventArgumentExtractorOutput = self.event_argument_extractor.forward(tweet)
+        event_arguments, event_graph, event_argument_wikidata_links = event_argument_extractor_output.event_arguments, event_argument_extractor_output.event_graph, event_argument_extractor_output.wikidata_links
 
         wikidata_links = None
-        for link in [event_type_wikidata_links]:
+        for link in [event_type_wikidata_links, event_argument_wikidata_links]:
             if link is None:
                 pass
             elif wikidata_links is None:
                 wikidata_links = link
             else:
-                wikidata_links = {**event_type_wikidata_links}
+                wikidata_links = {**event_type_wikidata_links, **event_argument_wikidata_links}
 
         return EventExtractorOutput(
             tweet=tweet,
@@ -66,11 +66,8 @@ class Instantiator(object):
         self.config = config
         self.extractor = None
         self.event_detector: EventDetectorType = self.load_event_detector(self.event_type_detector_path)
-        if Path(self.event_argument_extractor_path).exists():
-            self.event_argument_extractor: EventArgumentExtractorType = self.load_event_argument_extractor(
-                self.event_argument_extractor_path)
-        else:
-            raise ValueError("Please provide a valid event_argument_extractor_model_path.")
+        self.event_argument_extractor: EventArgumentExtractorType = self.load_event_argument_extractor(
+            self.event_argument_extractor_path)
 
     @property
     def event_type_detector_path(self) -> str:
@@ -99,9 +96,8 @@ class Instantiator(object):
         return EventDetector(path)
 
     @staticmethod
-    def load_event_argument_extractor(path: str) -> Union[EventArgumentExtractor, None]:
-        # return EventArgumentExtractor(path)
-        return None
+    def load_event_argument_extractor(path: str) -> EventArgumentExtractor:
+        return EventArgumentExtractor(path)
 
     def __call__(self) -> EventExtractor:
         return EventExtractor(self.event_detector, self.event_argument_extractor)

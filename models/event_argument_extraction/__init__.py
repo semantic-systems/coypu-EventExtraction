@@ -1,1 +1,1 @@
-from models.event_argument_extraction.EventArgumentExtractor import OpenIEExtractor, EventArgumentExtractor
+from models.event_argument_extraction.EventArgumentExtractor import EventArgumentExtractor
