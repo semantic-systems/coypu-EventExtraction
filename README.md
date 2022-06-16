@@ -9,7 +9,6 @@ The plan is to merge this two modules into one in the last MVP.
 - [ ] MVP 3: HiTeC Event Extractor
 
 # Requirement
-- Java
 - python >= 3.7
 
 Use your favorite virtual environment management tool and 

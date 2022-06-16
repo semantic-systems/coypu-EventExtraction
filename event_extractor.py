@@ -5,14 +5,14 @@ from pathlib import Path
 from typing import List, Dict, Union, Optional
 from datetime import datetime
 
-from models.event_argument_extraction import OpenIEExtractor, EventArgumentExtractor
+from models.event_argument_extraction import EventArgumentExtractor
 from models.event_detection.EventDetector import EventDetector
 from parser import parse
 from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput, Config, \
     ModelConfig, PublicMetaConfig, LocalMetaConfig
 
 EventDetectorType = Union[torch.nn.Module, EventDetector]
-EventArgumentExtractorType = Union[torch.nn.Module, OpenIEExtractor, EventArgumentExtractor]
+EventArgumentExtractorType = Union[torch.nn.Module, EventArgumentExtractor]
 
 
 class EventExtractor(object):
@@ -66,14 +66,11 @@ class Instantiator(object):
         self.config = config
         self.extractor = None
         self.event_detector: EventDetectorType = self.load_event_detector(self.event_type_detector_path)
-        self.event_argument_extractor = None
-        # if Path(self.event_argument_extractor_path).exists():
-        #     self.event_argument_extractor: EventArgumentExtractorType = self.load_event_argument_extractor(
-        #         self.event_argument_extractor_path)
-        # elif self.event_argument_extractor_path == "openie":
-        #     self.event_argument_extractor = OpenIEExtractor()
-        # else:
-        #     raise ValueError("Please provide a valid event_argument_extractor_model_path.")
+        if Path(self.event_argument_extractor_path).exists():
+            self.event_argument_extractor: EventArgumentExtractorType = self.load_event_argument_extractor(
+                self.event_argument_extractor_path)
+        else:
+            raise ValueError("Please provide a valid event_argument_extractor_model_path.")
 
     @property
     def event_type_detector_path(self) -> str:
@@ -102,8 +99,9 @@ class Instantiator(object):
         return EventDetector(path)
 
     @staticmethod
-    def load_event_argument_extractor(path: str) -> EventArgumentExtractor:
-        return EventArgumentExtractor(path)
+    def load_event_argument_extractor(path: str) -> Union[EventArgumentExtractor, None]:
+        # return EventArgumentExtractor(path)
+        return None
 
     def __call__(self) -> EventExtractor:
         return EventExtractor(self.event_detector, self.event_argument_extractor)
