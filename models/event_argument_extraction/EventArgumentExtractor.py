@@ -14,3 +14,17 @@ class EventArgumentExtractor(BaseComponent):
     @property
     def __version__(self):
         return "1.0.0"
+
+
+class EventTemporalInformationExtractor(BaseComponent):
+    def __init__(self, path_to_pretrained_model: str):
+        super(EventTemporalInformationExtractor).__init__()
+
+    def forward(self, tweet: str) -> EventArgumentExtractorOutput:
+        return EventArgumentExtractorOutput(tweet=tweet,
+                                            event_arguments=["arg1", "arg2"],
+                                            event_graph=[["arg1", "predicate","arg2"]],
+                                            wikidata_links={"arg1": "link1", "arg2": "link1"})
+    @property
+    def __version__(self):
+        return "1.0.0"

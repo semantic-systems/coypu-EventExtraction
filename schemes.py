@@ -29,6 +29,14 @@ class EventDetectorOutput:
 
 
 @dataclass
+class EventExtractorOutput:
+    tweet: str
+    event_type: Optional[str]
+    wikidata_links: Optional[Dict[str, str]]
+    timestamp: str
+
+
+@dataclass
 class EventArgumentExtractorOutput:
     tweet: str
     event_arguments: Optional[List[str]]
@@ -37,8 +45,11 @@ class EventArgumentExtractorOutput:
 
 
 @dataclass
-class EventExtractorOutput:
-    tweet: str
-    event_type: Optional[str]
-    wikidata_links: Optional[Dict[str, str]]
-    timestamp: str
+class Time:
+    value: str
+
+
+@dataclass
+class Location:
+    value: str
+
