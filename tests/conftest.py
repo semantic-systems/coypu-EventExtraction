@@ -9,7 +9,7 @@ from event_extractor import EventExtractor
 
 @pytest.fixture()
 def pretrained_model_google_drive_url():
-    return "https://docs.google.com/document/d/1p89rZA3vlLAcMCQmjtpSEwujLbbMt92fZWk8a6T76O8/edit?usp=sharing"
+    return "https://drive.google.com/file/d/1AybsGHx6aSL4IP8NUWQsqMZaVvthQudd/view?usp=sharing"
 
 
 @pytest.fixture()
@@ -24,22 +24,22 @@ def downloaded_pretrained_model_path(pretrained_model_output_path):
 
 @pytest.fixture()
 def valid_pretrained_event_detector_path():
-    return str(Path(__file__).parent.parent.joinpath("stores/models/pretrained_event_detector.pt"))
+    return str(Path(__file__).parent.parent.joinpath("../data/pretrained_event_detector.pt"))
 
 
 @pytest.fixture()
-def invalid_pretrained_event_detector_path():
-    return "/mocked_checkpoint.pt"
+def invalid_pretrained_event_detector_path(pretrained_model_output_path):
+    return str(Path(pretrained_model_output_path).joinpath("mocked_checkpoint.pt"))
 
 
 @pytest.fixture()
 def valid_pretrained_event_argument_extractor_path():
-    return str(Path(__file__).parent.parent.joinpath("stores/models/pretrained_event_argument_extractor.pt"))
+    return str(Path(__file__).parent.parent.joinpath("../data/pretrained_event_argument_extractor.pt"))
 
 
 @pytest.fixture()
-def invalid_pretrained_event_argument_extractor_path():
-    return "/mocked_checkpoint.pt"
+def invalid_pretrained_event_argument_extractor_path(pretrained_model_output_path):
+    return str(Path(pretrained_model_output_path).joinpath("mocked_checkpoint.pt"))
 
 
 @pytest.fixture()

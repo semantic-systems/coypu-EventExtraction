@@ -16,13 +16,12 @@ def parse():
 
     parser.add_argument("-link", "--link",
                         help='Google Drive link to download the model checkpoint.',
-                        default="https://drive.google.com/file/d/1cZd9dxValoqwy_85ZTQMtnZW7m1mJ1wQ/view?usp=sharing")
+                        default="https://drive.google.com/file/d/1AybsGHx6aSL4IP8NUWQsqMZaVvthQudd/view?usp=sharing")
     parser.add_argument("-path", "--path",
                         help='Path to a directory where the model checkpoint is saved.'
-                             'This should NOT be located within this repo because we want to store big files withinin '
+                             'This should NOT be located within this repo because we want to store big files within '
                              '/data',
-                        default="./../data")
-    parser.parse_args()
+                        default="./../../data")
     return parser.parse_args()
 
 
