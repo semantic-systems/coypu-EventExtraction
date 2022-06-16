@@ -9,4 +9,4 @@ class BaseComponent(object):
 
     @property
     def __version__(self):
-        raise NotImplementedError
+        raise "1.0.0"
