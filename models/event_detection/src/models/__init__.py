@@ -1,4 +1,3 @@
 from models.event_detection.src.models.SequenceClassificationBase import SequenceClassification
-from models.event_detection.src.models.SingleLabelSequenceClassification import SingleLabelSequenceClassification
-from models.event_detection.src.models.PrototypicalNetworks import PrototypicalNetworks
+from models.event_detection.src.models.SingleLabelSequenceClassification import SingleLabelSequenceClassification, SingleLabelContrastiveSequenceClassification
 

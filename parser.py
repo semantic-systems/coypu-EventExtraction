@@ -6,6 +6,6 @@ def parse():
 
     parser.add_argument("-c", "--config",
                         help='Path to a configuration file in yaml format.',
-                        default="./config/version_one.yml")
+                        default="./config/version_two.yml")
     parser.parse_args()
     return parser.parse_args()

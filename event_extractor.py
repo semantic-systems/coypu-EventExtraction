@@ -73,7 +73,7 @@ class Instantiator(object):
     def event_type_detector_path(self) -> str:
         if self.config.event_type_detector.type == "custom":
             path = str(Path(self.config.event_type_detector.meta.directory_to_store)
-                       .joinpath("pretrained_event_detector.pt").absolute())
+                       .joinpath("bertweet_best_model.pt").absolute())
         elif self.config.event_type_detector.type == "public":
             path = self.config.event_type_detector.meta.package
         else:

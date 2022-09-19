@@ -3,10 +3,11 @@ import copy
 from pathlib import Path
 
 import torch
-from typing import Union
+from typing import Union, Dict, List
 from omegaconf import DictConfig
 from torch.nn import Module, ModuleList
 from transformers import PreTrainedModel
+from models.event_detection.src.data_augmenters.tweet_normalizer import clean_up_tokenization, normalizeTweet
 
 
 class SequenceClassification(Module):
@@ -41,18 +42,21 @@ class SequenceClassification(Module):
         raise NotImplementedError
 
     @staticmethod
-    def trim_encoder_layers(encoder: PreTrainedModel, num_layers_to_keep: int) -> PreTrainedModel:
-        full_layers = encoder.encoder.layer
-        trimmed_layers = ModuleList()
+    def trim_encoder_layers(encoder: PreTrainedModel, num_layers_to_keep: Union[int, str]) -> PreTrainedModel:
+        if num_layers_to_keep == "full":
+            return encoder
+        else:
+            full_layers = encoder.encoder.layer
+            trimmed_layers = ModuleList()
 
-        # Now iterate over all layers, only keeping only the relevant layers.
-        for i in range(num_layers_to_keep):
-            trimmed_layers.append(full_layers[i])
+            # Now iterate over all layers, only keeping only the relevant layers.
+            for i in range(num_layers_to_keep):
+                trimmed_layers.append(full_layers[i])
 
-        # create a copy of the model, modify it with the new list, and return
-        trimmed_encoder = copy.deepcopy(encoder)
-        trimmed_encoder.encoder.layer = trimmed_layers
-        return trimmed_encoder
+            # create a copy of the model, modify it with the new list, and return
+            trimmed_encoder = copy.deepcopy(encoder)
+            trimmed_encoder.encoder.layer = trimmed_layers
+            return trimmed_encoder
 
     @staticmethod
     def freeze_encoder(encoder: PreTrainedModel, layers_to_freeze: Union[str, int]) -> PreTrainedModel:
@@ -72,14 +76,23 @@ class SequenceClassification(Module):
             raise ValueError(f"Currently, only 'all', 'none' and integer (<=num_transformer_layers) "
                              f"are valid value for freeze_transformer_layer")
 
-    def preprocess(self, batch):
-        return self.tokenizer(batch["text"], padding=True, truncation=True, max_length=512, return_tensors="pt")
+    def normalize(self, text: List[str]) -> List[str]:
+        normalized_text = text
+        if self.cfg.data.name in ["tweet_eval"]:
+            normalized_text: List[str] = [normalizeTweet(tweet) for tweet in text]
+            normalized_text = [clean_up_tokenization(tweet) for tweet in normalized_text]
+        return normalized_text
 
-    def save_model(self, path: Path):
+    def preprocess(self, batch):
+        return self.tokenizer(batch["text"], padding=True, truncation=True, return_tensors="pt")
+        # remove max_length arg to use the model's original value for that
+
+    def save_model(self, path: Path, index_label_map: Dict):
         torch.save({
             'config': self.cfg,
             'model_state_dict': self.state_dict(),
-            'optimizer_state_dict': self.optimizer.state_dict()
+            'optimizer_state_dict': self.optimizer.state_dict(),
+            'index_label_map': index_label_map
         }, path)
 
     @property

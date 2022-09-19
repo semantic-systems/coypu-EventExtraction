@@ -25,7 +25,7 @@ class InputFeature:
 class SingleLabelClassificationForwardOutput:
     loss: Optional[tensor] = None
     prediction_logits: tensor = None
-    hidden_states: Optional[Tuple[tensor]] = None
+    encoded_features: Optional[tensor] = None
     attentions: Optional[Tuple[tensor]] = None
 
 
@@ -38,12 +38,12 @@ class EventDetector(BaseComponent):
         self.index_label_map = checkpoint['index_label_map']
 
     def forward(self, tweet: str) -> EventDetectorOutput:
-        tokenized_text = self.model.tokenizer(tweet, padding=True, truncation=True, max_length=512, return_tensors="pt")
+        tokenized_text = self.model.tokenizer(tweet, padding=True, truncation=True, return_tensors="pt")
         input_ids: tensor = tokenized_text["input_ids"].to(self.model.device)
         attention_masks: tensor = tokenized_text["attention_mask"].to(self.model.device)
         labels = None
         input_feature: InputFeature = InputFeature(input_ids=input_ids, attention_mask=attention_masks, labels=labels)
-        output: SingleLabelClassificationForwardOutput = self.model.forward(input_feature)
+        output: SingleLabelClassificationForwardOutput = self.model.forward(input_feature, "test")
         prediction = output.prediction_logits.argmax(1).item()
         event_type = self.index_label_map[str(prediction)]
         wikidata_link = EVENT_TYPE_WIKIDATA_LINKS.get(event_type)
@@ -51,4 +51,4 @@ class EventDetector(BaseComponent):
 
     @property
     def __version__(self):
-        return "1.0.0"
+        return "2.0.0"

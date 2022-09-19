@@ -8,3 +8,5 @@ pytest
 torchaudio
 torchvision
 transformers
+emoji
+nltk
