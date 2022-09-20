@@ -57,7 +57,8 @@ class EventDetector(BaseComponent):
     @staticmethod
     def download_crisis_lm(checkpoint):
         if not Path("../data/language_models/CoyPu-CrisisLM-v1").exists():
-            Path("../data/language_models/CoyPu-CrisisLM-v1").mkdir()
+            if not Path("../data/language_models/").exists():
+                Path("../data/language_models/").mkdir()
             url = "https://drive.google.com/drive/folders/1u6Mthkr4ffVNSjPn3F_B49axTsCHwRv8?usp=sharing"
             config = LocalMetaConfig(name="CoyPu-CrisisLM-v1", google_drive_link=url,
                                      directory_to_store="../data/language_models/")
