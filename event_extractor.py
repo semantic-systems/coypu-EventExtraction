@@ -1,3 +1,5 @@
+import os
+
 import torch
 import yaml
 
@@ -14,6 +16,7 @@ from stores.download import download_from_google_drive
 
 EventDetectorType = Union[torch.nn.Module, EventDetector]
 EventArgumentExtractorType = Union[torch.nn.Module, EventArgumentExtractor]
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 
 class EventExtractor(object):
