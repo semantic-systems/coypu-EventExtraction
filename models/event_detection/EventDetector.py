@@ -41,6 +41,7 @@ class EventDetector(BaseComponent):
         self.model = SingleLabelSequenceClassification(checkpoint['config'])
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.index_label_map = checkpoint['index_label_map']
+        self.model.to(torch.device('cpu'))
 
     def forward(self, tweet: str) -> EventDetectorOutput:
         tokenized_text = self.model.tokenizer(tweet, padding=True, truncation=True, return_tensors="pt")
