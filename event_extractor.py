@@ -10,6 +10,7 @@ from models.event_detection.EventDetector import EventDetector
 from parser import parse
 from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput, Config, \
     ModelConfig, PublicMetaConfig, LocalMetaConfig
+from stores.download import download_from_google_drive
 
 EventDetectorType = Union[torch.nn.Module, EventDetector]
 EventArgumentExtractorType = Union[torch.nn.Module, EventArgumentExtractor]
@@ -41,6 +42,8 @@ class EventExtractor(object):
         return EventExtractorOutput(
             tweet=tweet,
             event_type=event_type,
+            event_arguments=event_arguments,
+            event_graph=event_graph,
             wikidata_links=wikidata_links,
             timestamp=self.get_date_time()
         )
@@ -73,7 +76,7 @@ class Instantiator(object):
     def event_type_detector_path(self) -> str:
         if self.config.event_type_detector.type == "custom":
             path = str(Path(self.config.event_type_detector.meta.directory_to_store)
-                       .joinpath("bertweet_best_model.pt").absolute())
+                       .joinpath(self.config.event_type_detector.meta.name).absolute())
         elif self.config.event_type_detector.type == "public":
             path = self.config.event_type_detector.meta.package
         else:
@@ -84,7 +87,7 @@ class Instantiator(object):
     def event_argument_extractor_path(self) -> str:
         if self.config.event_argument_extractor.type == "custom":
             path = str(Path(self.config.event_argument_extractor.meta.directory_to_store)
-                       .joinpath("pretrained_event_detector.pt").absolute())
+                       .joinpath(self.config.event_argument_extractor.meta.name).absolute())
         elif self.config.event_argument_extractor.type == "public":
             path = self.config.event_argument_extractor.meta.package
         else:
@@ -128,6 +131,14 @@ if __name__ == '__main__':
     with open(config_path, "r") as f:
         config: Dict = yaml.safe_load(f)
         config: Config = validate(config)
+    if not Path(config.event_type_detector.meta.directory_to_store, config.event_type_detector.meta.name).exists():
+        if not Path(config.event_type_detector.meta.directory_to_store).exists():
+            Path(config.event_type_detector.meta.directory_to_store).mkdir()
+        download_from_google_drive(config.event_type_detector.meta)
+    if not Path(config.event_argument_extractor.meta.directory_to_store, config.event_argument_extractor.meta.name).exists():
+        if not Path(config.event_argument_extractor.meta.directory_to_store).exists():
+            Path(config.event_argument_extractor.meta.directory_to_store).mkdir()
+        download_from_google_drive(config.event_argument_extractor.meta)
     instantiator = Instantiator(config)
     event_extractor = instantiator()
     while True:
@@ -135,4 +146,6 @@ if __name__ == '__main__':
         output = event_extractor.infer(tweet)
         print(f""
               f"Event type: {output.event_type}\n"
+              f"Event arguments: {output.event_arguments}\n"
+              f"Event graph: {output.event_graph}\n"
               f"Wikidata links: {output.wikidata_links}\n")

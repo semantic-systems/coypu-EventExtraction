@@ -32,7 +32,9 @@ class EventDetectorOutput:
 class EventExtractorOutput:
     tweet: str
     event_type: Optional[str]
-    wikidata_links: Optional[Dict[str, str]]
+    event_arguments: Optional[List[str]]
+    event_graph: Optional[List[List[str]]]
+    wikidata_links: Optional[Dict[str, Union[str, None]]]
     timestamp: str
 
 
@@ -41,7 +43,7 @@ class EventArgumentExtractorOutput:
     tweet: str
     event_arguments: Optional[List[str]]
     event_graph: Optional[List[List[str]]]
-    wikidata_links: Optional[Dict[str, str]]
+    wikidata_links: Optional[Dict[str, Union[str, None]]]
 
 
 @dataclass

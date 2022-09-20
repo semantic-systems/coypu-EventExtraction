@@ -1,10 +1,12 @@
 event_type_detector:
   type: "custom"
   meta:
-    google_drive_link: "https://drive.google.com/file/d/1AybsGHx6aSL4IP8NUWQsqMZaVvthQudd/view?usp=sharing"
-    directory_to_store: "./../data/"
+    name: "crisisbert_w_oos_linear.pt"
+    google_drive_link: "https://drive.google.com/file/d/1Hj_s7UfKYOMszQYAYLy0iNFN1qD1wxrH/view?usp=sharing"
+    directory_to_store: "./../data/event_detector/"
 event_argument_extractor:
   type: "custom"
   meta:
-    google_drive_link: "https://drive.google.com/file/d/1AybsGHx6aSL4IP8NUWQsqMZaVvthQudd/view?usp=sharing"
-    directory_to_store: "./../data/"
+    name: "isoie"
+    google_drive_link: "https://drive.google.com/drive/folders/1nCbn6gb7Tq-8pEwSUeXBWHpMnOieAjfr?usp=sharing"
+    directory_to_store: "./../data/event_argument_extractor/"
