@@ -8,6 +8,7 @@ from typing import List, Dict, Union, Optional
 from datetime import datetime
 
 from models.event_argument_extraction import EventArgumentExtractor
+from models.event_argument_extraction.EventArgumentExtractor import FalconEventArgumentExtractor
 from models.event_detection.EventDetector import EventDetector
 from parser import parse
 from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput, Config, \
@@ -56,7 +57,7 @@ class EventExtractor(object):
 
     def infer(self, tweet: str) -> EventExtractorOutput:
         output: EventExtractorOutput = self.extract_per_tweet(tweet)
-        return output
+        return output.event_type, output.event_arguments, output.wikidata_links
 
     @staticmethod
     def get_date_time() -> str:
@@ -72,7 +73,7 @@ class Instantiator(object):
                  ):
         self.extractor = None
         self.event_detector: EventDetectorType = self.load_event_detector(event_type_detector_path)
-        self.event_argument_extractor: EventArgumentExtractorType = self.load_event_argument_extractor(
+        self.event_argument_extractor: FalconEventArgumentExtractor = self.load_event_argument_extractor(
             event_argument_extractor_path)
 
     @staticmethod
@@ -80,8 +81,35 @@ class Instantiator(object):
         return EventDetector(path)
 
     @staticmethod
-    def load_event_argument_extractor(path: str) -> EventArgumentExtractor:
-        return EventArgumentExtractor(path)
+    def load_event_argument_extractor(path: str) -> FalconEventArgumentExtractor:
+        return FalconEventArgumentExtractor(path)
 
     def __call__(self) -> EventExtractor:
         return EventExtractor(self.event_detector, self.event_argument_extractor)
+
+
+if __name__ == '__main__':
+    args = parse()
+    config_path: str = str(Path(args.config).absolute())
+    with open(config_path, "r") as f:
+        config: Dict = yaml.safe_load(f)
+    instantiator = Instantiator("../data/event_detector/crisisbert_w_oos_linear.pt", "")
+    event_extractor = instantiator()
+    # while True:
+    #     tweet = input('Please enter a tweet: ')
+    #     output = event_extractor.infer(tweet)
+    #     print(f""
+    #           f"Event type: {output.event_type}\n"
+    #           f"Event arguments: {output.event_arguments}\n"
+    #           f"Event graph: {output.event_graph}\n"
+    #           f"Wikidata links: {output.wikidata_links}\n")
+    import gradio as gr
+    demo = gr.Interface(fn=event_extractor.infer,
+                        inputs=gr.Textbox(placeholder="Enter a sentence here..."),
+                        outputs=["text", "json", "json"],
+                        examples=[["A preliminary 6.20 magnitude #earthquake has occurred near Taft, Eastern Visayas, #Philippines."],
+                                   ["A shooting has been reported at Saugus High School in Santa Clarita just north of Los Angeles."],
+                                   ["Six Vicpol officers have tested positive this month #COVID19"],
+                                   ["One person was missing following a large explosion at an apparent industrial building in Houston Friday. The blast damaged nearby buildings and homes."]
+                                   ])
+    demo.launch(share=True)

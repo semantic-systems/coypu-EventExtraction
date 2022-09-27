@@ -34,7 +34,7 @@ class EventDetector(BaseComponent):
     def __init__(self, path_to_pretrained_model: str):
         super(EventDetector).__init__()
         checkpoint = torch.load(path_to_pretrained_model, map_location=torch.device('cpu'))
-        checkpoint['config']['model']["from_pretrained"] = "/data/language_models/CoyPu-CrisisLM-v1"
+        checkpoint['config']['model']["from_pretrained"] = "../data/language_models/CoyPu-CrisisLM-v1"
         self.model = SingleLabelSequenceClassification(checkpoint['config'])
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.index_label_map = checkpoint['index_label_map']
@@ -50,6 +50,8 @@ class EventDetector(BaseComponent):
         prediction = output.prediction_logits.argmax(1).item()
         event_type = self.index_label_map[str(prediction)]
         wikidata_link = EVENT_TYPE_WIKIDATA_LINKS.get(event_type)
+        if wikidata_link is not None:
+            wikidata_link = "http://www.wikidata.org/entity/" + wikidata_link
         return EventDetectorOutput(tweet=tweet, event_type=event_type, wikidata_links={event_type: wikidata_link})
 
     @property
