@@ -41,9 +41,29 @@ def download_from_google_drive(config: LocalMetaConfig):
 
 
 if __name__ == '__main__':
-    args = parse()
-    google_drive_link = args.link
-    directory_to_store = args.path
-    name = args.name
-    config = LocalMetaConfig(name=name, google_drive_link=google_drive_link, directory_to_store=directory_to_store)
-    download_from_google_drive(config)
+
+    event_detector_model_path = "../../../data/event_detector/crisisbert_w_oos_linear.pt"
+    event_argument_extractor_model_path = "../../../data/event_argument_extractor/isoie"
+    if not Path(event_detector_model_path).exists():
+        if not Path("../../../data/event_detector").exists():
+            Path("../../../data/event_detector").mkdir()
+        gdown.download(url="https://drive.google.com/file/d/1Hj_s7UfKYOMszQYAYLy0iNFN1qD1wxrH/view?usp=sharing",
+                       output=event_detector_model_path, fuzzy=True)
+    if not Path(event_argument_extractor_model_path).exists():
+        if not Path("../../../data/event_argument_extractor").exists():
+            Path("../../../data/event_argument_extractor").mkdir()
+        gdown.download_folder(
+            url="https://drive.google.com/drive/folders/1nCbn6gb7Tq-8pEwSUeXBWHpMnOieAjfr?usp=sharing",
+            output=event_argument_extractor_model_path)
+    if not Path("../../../data/language_models/CoyPu-CrisisLM-v1").exists():
+        if not Path("../../../data/language_models/").exists():
+            Path("../../../data/language_models/").mkdir()
+        gdown.download_folder(
+            url="https://drive.google.com/drive/folders/1u6Mthkr4ffVNSjPn3F_B49axTsCHwRv8?usp=sharing",
+            output="../../../data/language_models/CoyPu-CrisisLM-v1")
+    # args = parse()
+    # google_drive_link = args.link
+    # directory_to_store = args.path
+    # name = args.name
+    # config = LocalMetaConfig(name=name, google_drive_link=google_drive_link, directory_to_store=directory_to_store)
+    # download_from_google_drive(config)

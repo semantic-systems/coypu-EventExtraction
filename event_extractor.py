@@ -93,7 +93,7 @@ if __name__ == '__main__':
     config_path: str = str(Path(args.config).absolute())
     with open(config_path, "r") as f:
         config: Dict = yaml.safe_load(f)
-    instantiator = Instantiator("../data/event_detector/crisisbert_w_oos_linear.pt", "")
+    instantiator = Instantiator("../../data/event_detector/crisisbert_w_oos_linear.pt", "")
     event_extractor = instantiator()
     # while True:
     #     tweet = input('Please enter a tweet: ')
