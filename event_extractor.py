@@ -112,5 +112,5 @@ if __name__ == '__main__':
                                    ["Six Vicpol officers have tested positive this month #COVID19"],
                                    ["One person was missing following a large explosion at an apparent industrial building in Houston Friday. The blast damaged nearby buildings and homes."]
                                    ])
-    app, local_url, share_url = demo.launch(share=True, prevent_thread_lock=True)
-    print(f"local_url: {local_url}, share_url: {share_url}, FastAPI app: {app}")
+    _, local_url, share_url = demo.launch(share=True)
+    print(f"local_url: {local_url}, share_url: {share_url}")
