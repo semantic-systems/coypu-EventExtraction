@@ -34,6 +34,7 @@ class EventDetector(BaseComponent):
     def __init__(self, path_to_pretrained_model: str):
         super(EventDetector).__init__()
         checkpoint = torch.load(path_to_pretrained_model, map_location=torch.device('cpu'))
+        print("cwd", os.getcwd())
         checkpoint['config']['model']["from_pretrained"] = "../../../../data/language_models/CoyPu-CrisisLM-v1"
         self.model = SingleLabelSequenceClassification(checkpoint['config'])
         self.model.load_state_dict(checkpoint['model_state_dict'])
