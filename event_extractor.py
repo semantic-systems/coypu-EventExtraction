@@ -95,14 +95,6 @@ if __name__ == '__main__':
         config: Dict = yaml.safe_load(f)
     instantiator = Instantiator("../../data/event_detector/crisisbert_w_oos_linear.pt", "")
     event_extractor = instantiator()
-    # while True:
-    #     tweet = input('Please enter a tweet: ')
-    #     output = event_extractor.infer(tweet)
-    #     print(f""
-    #           f"Event type: {output.event_type}\n"
-    #           f"Event arguments: {output.event_arguments}\n"
-    #           f"Event graph: {output.event_graph}\n"
-    #           f"Wikidata links: {output.wikidata_links}\n")
     import gradio as gr
     demo = gr.Interface(fn=event_extractor.infer,
                         inputs=gr.Textbox(placeholder="Enter a sentence here..."),
@@ -112,5 +104,4 @@ if __name__ == '__main__':
                                    ["Six Vicpol officers have tested positive this month #COVID19"],
                                    ["One person was missing following a large explosion at an apparent industrial building in Houston Friday. The blast damaged nearby buildings and homes."]
                                    ])
-    _, local_url, share_url = demo.launch(share=True)
-    print(f"local_url: {local_url}, share_url: {share_url}")
+    demo.launch(share=True, show_error=True)
