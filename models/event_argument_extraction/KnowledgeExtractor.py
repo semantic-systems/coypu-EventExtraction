@@ -1,41 +1,42 @@
+from abc import abstractmethod
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from typing import Union, Text, List
+
 
 class KnowledgeExtractor(object):
-    def __init__(self):
-        self.path_to_ckpt = ''
-        self.tokenizer = None
-        self.model = None
-        self.model_para = dict()
+    def __init__(self, path_to_ckpt:str):
+        self.tokenizer, self.model = self.instantiate(path_to_ckpt)
 
-    def instantiate(self):
+    @abstractmethod
+    def instantiate(path_to_ckpt: str):
         pass
-         
-    def forward(self):
+        
+    def forward(self, text: Union[Text, List[Text]]):
         pass
  
 class RebelKnowledgeExtractor(KnowledgeExtractor):
+    def __init__(self, path_to_ckpt: str):
+        super(RebelKnowledgeExtractor, self).__init__(path_to_ckpt)
 
-    def instantiate(self, model="Babelscape/rebel-large", max_length = 256, length_penalty = 0, num_beams = 3, num_return_sequences = 3):
-        self.tokenizer = AutoTokenizer.from_pretrained(model)
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(model)
-        self.model_para = {"max_length": max_length,
-                                        "length_penalty": length_penalty,
-                                        "num_beams": num_beams,
-                                        "num_return_sequences": num_return_sequences,
-                                        }
-        return 
+    def instantiate(self, path_to_ckpt: str):
+        tokenizer = AutoTokenizer.from_pretrained(path_to_ckpt)
+        model = AutoModelForSeq2SeqLM.from_pretrained(path_to_ckpt)
+        return tokenizer, model
          
-    def forward(self, text:"We see a covid breakout in Hamburg in 2019.") -> list:
+    def forward(self, text="We see a covid breakout in Hamburg in 2019.") -> list:
         model_inputs = self.tokenizer(text, max_length=256, padding=True, truncation=True, return_tensors = 'pt')
         generated_tokens = self.model.generate(
             model_inputs["input_ids"].to(self.model.device),
             attention_mask=model_inputs["attention_mask"].to(self.model.device),
-            **self.model_para,
-        )
+            max_length = 256,
+            length_penalty = 0,
+            num_beams = 3,
+            num_return_sequences = 3,
+            )
 
         decoded_preds = self.tokenizer.batch_decode(generated_tokens, skip_special_tokens=False)
         triples = list()
-        for idx, sentence in enumerate(decoded_preds):
+        for _, sentence in enumerate(decoded_preds):
             for triple in self.extract_triplets(sentence):
                 if triple not in triples:
                     triples.append(triple)
@@ -74,6 +75,5 @@ class RebelKnowledgeExtractor(KnowledgeExtractor):
 
 if __name__ == "__main__":
     # test
-    test = RebelKnowledgeExtractor()
-    test.instantiate()
-    test.forward("Russia destroyed 30% of Ukraine’s power stations within the past week, says Zelensky. Russia is clearly waging this war against civilians. #Russia #russiaisateroriststate #Energy #war")
+    test = RebelKnowledgeExtractor("Babelscape/rebel-large")
+    print(test.forward("Russia destroyed 30% of Ukraine’s power stations within the past week, says Zelensky. Russia is clearly waging this war against civilians. #Russia #russiaisateroriststate #Energy #war"))
