@@ -9,7 +9,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 class IosieEventArgumentExtractor(BaseEventArgumentExtractor):
-    def __init__(self, path_to_pretrained_model: str = "../../data/event_argument_extractor/iosie"):
+    def __init__(self, path_to_pretrained_model: str = "../data/event_argument_extractor/iosie"):
         super(IosieEventArgumentExtractor).__init__()
         self.prepare(path_to_pretrained_model)
         self.token_classifier = pipeline(
@@ -27,8 +27,8 @@ class IosieEventArgumentExtractor(BaseEventArgumentExtractor):
     @staticmethod
     def prepare(path_to_pretrained_model):
         if not Path(path_to_pretrained_model).exists():
-            if not Path("../../../data/event_argument_extractor").exists():
-                Path("../../../data/event_argument_extractor").mkdir()
+            if not Path("../data/event_argument_extractor").exists():
+                Path("../data/event_argument_extractor").mkdir()
             gdown.download_folder(
                 url="https://drive.google.com/drive/folders/1nCbn6gb7Tq-8pEwSUeXBWHpMnOieAjfr?usp=sharing",
                 output=path_to_pretrained_model)
