@@ -8,10 +8,6 @@ import urllib.request
 
 class Linker(object):
     def __init__(self):
-        self.path_to_ckpt = ''
-        self.tokenizer = None
-        self.model = None
-        self.model_para = dict()
         self.model = self.instantiate()
 
     @staticmethod
@@ -23,17 +19,13 @@ class Linker(object):
         pass
 
 
-class RelationLinker(Linker):
+class WikidataRelationLinker(Linker):
     def __init__(self):
-        super(RelationLinker, self).__init__()
-        self.property_dict: Dict = self.instantiate()
+        super(WikidataRelationLinker, self).__init__()
 
     @staticmethod
     def instantiate() -> Dict:
-        url = "https://quarry.wmflabs.org/run/45013/output/1/json"
-        # Fetch json from given lib
-        res = json.loads(urllib.request.urlopen(url).read())
-        return {w[0]: w[1] for w in res["rows"]}
+        pass
          
     def forward(self, text: str) -> list:
         return self.filter(self.get_related_property_entities(text))
@@ -88,8 +80,6 @@ class RelationLinker(Linker):
                         "pid": p,
                         "entity": self.get_entity_name_from_id(cid)
                         })
-                    #ans.append("\\property\\"+p+"\t"+getp(p)+"\t\\entity\\"+cid+"\t"+get_entity_name_from_id(cid))
-                    # Print in a pid-pname-eid-ename fashion
                 except:
                     continue
         return ans
@@ -100,9 +90,9 @@ class RelationLinker(Linker):
                 for ent in ans if ent['pid'].startswith(choose)]
 
 
-class EntityLinker(Linker):
+class OpenTapiocaEntityLinker(Linker):
     def __init__(self):
-        super(EntityLinker, self).__init__()
+        super(OpenTapiocaEntityLinker, self).__init__()
 
     @staticmethod
     def instantiate():
@@ -116,10 +106,8 @@ class EntityLinker(Linker):
 
 
 if __name__ == "__main__":
-    test = EntityLinker()
-    test.instantiate()
+    test = OpenTapiocaEntityLinker()
     print(test.forward('Germany'))
     # test the relation linking module
-    test = RelationLinker()
-    test.instantiate()
+    test = WikidataRelationLinker()
     print(test.forward('border'))
