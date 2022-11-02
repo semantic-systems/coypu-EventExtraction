@@ -10,3 +10,4 @@ torchvision
 transformers
 emoji
 nltk
+spacyopentapioca

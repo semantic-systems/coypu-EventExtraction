@@ -8,7 +8,7 @@ class BaseEventArgumentExtractor(BaseComponent):
     def __init__(self):
         super(BaseEventArgumentExtractor).__init__()
 
-    def forward(self, tweet: str) -> EventArgumentExtractorOutput:
+    def forward(self, tweet:str) -> EventArgumentExtractorOutput:
         return EventArgumentExtractorOutput(tweet=tweet,
                                             event_arguments=["arg1", "arg2"],
                                             event_graph=[["arg1", "predicate","arg2"]],
