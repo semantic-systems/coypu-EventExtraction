@@ -2,6 +2,7 @@ flagged/
 .idea/
 outputs/
 mlruns/
+*.out
 *.props
 *.pt
 .DS_Store
