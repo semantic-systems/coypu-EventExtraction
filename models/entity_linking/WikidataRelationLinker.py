@@ -1,22 +1,7 @@
-from abc import abstractmethod
 from typing import Dict, List
-
-import spacy
 import json, urllib
 import urllib.request
-
-
-class Linker(object):
-    def __init__(self):
-        self.model = self.instantiate()
-
-    @staticmethod
-    @abstractmethod
-    def instantiate():
-        pass
-         
-    def forward(self, text: str):
-        pass
+from models.entity_linking.Linker import Linker
 
 
 class WikidataRelationLinker(Linker):
@@ -26,7 +11,7 @@ class WikidataRelationLinker(Linker):
     @staticmethod
     def instantiate() -> Dict:
         pass
-         
+
     def forward(self, text: str) -> list:
         return self.filter(self.get_related_property_entities(text))
 
@@ -34,17 +19,20 @@ class WikidataRelationLinker(Linker):
     def get_id_from_mention(entity_name: str) -> str:
         # Get wikidata id from wikidata api
         ans = []
-        url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&search=" +"+".join(entity_name.split(" ")) + "&language=en"
+        url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&search=" + "+".join(
+            entity_name.split(" ")) + "&language=en"
         response = json.loads(urllib.request.urlopen(url).read())
         ans += response["search"]
         if (ans == [] and " " in entity_name):
             # Reverse Trick : Pan Changjiang
-            url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&search=" +"+".join(entity_name.split(" ")[::-1]) + "&language=en"
+            url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&search=" + "+".join(
+                entity_name.split(" ")[::-1]) + "&language=en"
             response = json.loads(urllib.request.urlopen(url).read())
             ans += response["search"]
         if (ans == [] and len(entity_name.split(" ")) > 2):
             # Abbreviation Trick
-            url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&search=" +"+".join([entity_name.split(" ")[0], entity_name.split(" ")[-1]]) + "&language=en"
+            url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&search=" + "+".join(
+                [entity_name.split(" ")[0], entity_name.split(" ")[-1]]) + "&language=en"
             response = json.loads(urllib.request.urlopen(url).read())
             ans += response["search"]
         if len(ans) > 0:
@@ -68,7 +56,7 @@ class WikidataRelationLinker(Linker):
         query = self.get_id_from_mention(name)
         if query == "Not Applicable": return []
         ans = []
-        url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids="+query+"&format=json&languages=en"
+        url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" + query + "&format=json&languages=en"
         response = json.loads(urllib.request.urlopen(url).read())
         for p in response["entities"][query]["claims"]:
             for c in response["entities"][query]["claims"][p]:
@@ -79,7 +67,7 @@ class WikidataRelationLinker(Linker):
                     ans.append({
                         "pid": p,
                         "entity": self.get_entity_name_from_id(cid)
-                        })
+                    })
                 except:
                     continue
         return ans
@@ -90,24 +78,6 @@ class WikidataRelationLinker(Linker):
                 for ent in ans if ent['pid'].startswith(choose)]
 
 
-class OpenTapiocaEntityLinker(Linker):
-    def __init__(self):
-        super(OpenTapiocaEntityLinker, self).__init__()
-
-    @staticmethod
-    def instantiate():
-        model = spacy.blank("en")
-        model.add_pipe('opentapioca')
-        return model
-         
-    def forward(self, text: str) -> List:
-        model_output = self.model(text)
-        return [(span.text, span.kb_id_, span.label_) for span in model_output.ents]
-
-
 if __name__ == "__main__":
-    test = OpenTapiocaEntityLinker()
-    print(test.forward('Germany'))
-    # test the relation linking module
     test = WikidataRelationLinker()
     print(test.forward('border'))
