@@ -67,7 +67,7 @@ if __name__ == '__main__':
     import gradio as gr
     demo = gr.Interface(fn=event_extractor.infer,
                         inputs=gr.Textbox(placeholder="Enter a sentence here..."),
-                        outputs=["text", "json", "json"],
+                        outputs=["text", "json", "json", "json"],
                         examples=[["A preliminary 6.20 magnitude #earthquake has occurred near Taft, Eastern Visayas, #Philippines."],
                                    ["A shooting has been reported at Saugus High School in Santa Clarita just north of Los Angeles."],
                                    ["Six Vicpol officers have tested positive this month #COVID19"],

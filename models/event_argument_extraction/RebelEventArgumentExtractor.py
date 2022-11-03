@@ -35,13 +35,13 @@ class RebelEventArgumentExtractor(BaseEventArgumentExtractor):
     def get_entity_link(self, mention: str) -> Dict:
         link = self.entity_linker.forward(mention)
         if link:
-            return {mention: link[0][1]}
+            return {mention: "http://www.wikidata.org/entity/" + link[0][1]}
         else:
             return {}
 
     def get_relation_link(self, relation: str) -> Dict:
         link = self.relation_linker.forward(relation)
         if link:
-            return {relation: link[0]["ID"]}
+            return {relation: "http://www.wikidata.org/entity/" + link[0]["ID"]}
         else:
             return {}
