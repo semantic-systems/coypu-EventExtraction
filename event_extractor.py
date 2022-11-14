@@ -1,17 +1,14 @@
-import os
 import torch
-from typing import List, Dict, Union, Optional
+from typing import List, Union, Optional
 from datetime import datetime
 
 from models.event_argument_extraction.FalconEventArgumentExtractor import FalconEventArgumentExtractor
 from models.event_argument_extraction.RebelEventArgumentExtractor import RebelEventArgumentExtractor
 from models.event_detection.EventDetector import EventDetector
-from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput, Config, \
-    ModelConfig, PublicMetaConfig, LocalMetaConfig
+from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput
 
 EventDetectorType = Union[torch.nn.Module, EventDetector]
 EventArgumentExtractorType = Union[torch.nn.Module, FalconEventArgumentExtractor, RebelEventArgumentExtractor]
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 
 class EventExtractor(object):
@@ -49,7 +46,7 @@ class EventExtractor(object):
     def extract_per_batch(self, tweets: List[str]) -> List[EventExtractorOutput]:
         pass
 
-    def infer(self, tweet: str) -> EventExtractorOutput:
+    def infer(self, tweet: str) -> tuple:
         output: EventExtractorOutput = self.extract_per_tweet(tweet)
         return output.event_type, output.event_arguments, output.event_graph, output.wikidata_links, output.timestamp
 
