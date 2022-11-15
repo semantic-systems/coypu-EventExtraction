@@ -17,7 +17,7 @@ RUN mkdir -p /data
 COPY . /src/
 WORKDIR src
 
-EXPOSE 5000/tcp
+EXPOSE 8080/tcp
 
 ENTRYPOINT ["python"]
 CMD ["/src/script.py"]
