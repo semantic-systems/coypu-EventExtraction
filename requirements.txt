@@ -10,3 +10,7 @@ torchvision
 transformers
 emoji
 nltk
+spacyopentapioca
+gradio
+flask
+flask_healthz

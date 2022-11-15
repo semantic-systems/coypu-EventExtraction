@@ -1,0 +1,6 @@
+version: "1.0"
+services:
+  event_extractor:
+    build: .
+    ports:
+      - "8080:8080"
