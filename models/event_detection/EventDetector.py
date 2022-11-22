@@ -54,9 +54,7 @@ class EventDetector(BaseComponent):
         prediction = output.prediction_logits.argmax(1).item()
         event_type = self.index_label_map[str(prediction)]
         wikidata_link = EVENT_TYPE_WIKIDATA_LINKS.get(event_type)
-        if wikidata_link is not None:
-            wikidata_link = "http://www.wikidata.org/entity/" + wikidata_link
-        return EventDetectorOutput(tweet=tweet, event_type=event_type, wikidata_links={event_type: wikidata_link})
+        return EventDetectorOutput(tweet=tweet, event_type=event_type, wikidata_link=wikidata_link)
 
     @property
     def __version__(self):

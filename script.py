@@ -39,7 +39,7 @@ def flask():
     output = event_extractor.infer(message)
 
     response = {'message': message, 'event type': output[0], 'event arguments': output[1],
-                'event graph': output[2], 'wikipedia links': output[3]}
+                'event graph': output[2]}
     return jsonify(response), 200
 
 

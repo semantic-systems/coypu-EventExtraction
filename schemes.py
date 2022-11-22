@@ -25,25 +25,29 @@ class Config:
 class EventDetectorOutput:
     tweet: str
     event_type: Optional[str]
-    wikidata_links: Optional[Dict[str, str]]
+    wikidata_link: Optional[str]
+
+
+@dataclass
+class LinkedEntity:
+    entity: Optional[str]
+    id: Optional[str]
+    label: Optional[str]
+    description: Optional[str]
 
 
 @dataclass
 class EventExtractorOutput:
     tweet: str
     event_type: Optional[str]
-    event_arguments: Optional[List[str]]
-    event_graph: Optional[List[List[str]]]
-    wikidata_links: Optional[Dict[str, Union[str, None]]]
-    timestamp: str
+    event_arguments: Optional[List[LinkedEntity]]
+    event_graph: Optional[List[Dict]]
 
 
 @dataclass
 class EventArgumentExtractorOutput:
     tweet: str
-    event_arguments: Optional[List[str]]
-    event_graph: Optional[List[List[str]]]
-    wikidata_links: Optional[Dict[str, Union[str, None]]]
+    event_arguments: Optional[List[LinkedEntity]]
 
 
 @dataclass

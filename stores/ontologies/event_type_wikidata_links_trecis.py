@@ -9,5 +9,5 @@ EVENT_TYPE_WIKIDATA_LINKS = {
     'explosion': 'Q179057',
     'fire': 'Q3196',
     'hostage': 'Q1371150',
-    'oos': None
+    'oos': 'Q543287'
     }
