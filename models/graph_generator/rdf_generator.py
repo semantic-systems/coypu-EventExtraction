@@ -1,8 +1,9 @@
 import json
+import uuid
 from datetime import datetime
 from typing import Optional
 
-from rdflib import Graph, Literal, BNode, Namespace, URIRef
+from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import FOAF, RDF, RDFS
 from schemes import EventDetectorOutput, EventArgumentExtractorOutput
 
@@ -22,7 +23,7 @@ class RDFGenerator(object):
         g.bind("coy", coy)
         g.bind("foaf", FOAF)
 
-        current = BNode()  # a GUID is generated
+        current = URIRef(f"https://data.coypu.org/event/mod/{uuid.uuid4()}")
 
         for linked_entity in event_argument_extractor_output.event_arguments:
             ID = URIRef("http://www.wikidata.org/entity/"+linked_entity.id)
@@ -40,7 +41,7 @@ class RDFGenerator(object):
         g.add((current, coy.hasPublisher, Literal("HiTec")))
         g.add((current, coy.hasTimestamp, Literal(self.get_date_time())))
         g.serialize(format='json-ld', indent=4, destination=path_to_jsonld)
-        return json.loads(g.serialize(format='json-ld', indent=4))
+        return json.loads(g.serialize(format='json-ld', indent=4))[0]
 
     @staticmethod
     def get_date_time() -> str:

@@ -1,0 +1,36 @@
+[
+    {
+        "@id": "https://data.coypu.org/event/mod/7055d4d7-ab37-454a-8ecc-08b51424aeaf",
+        "@type": [
+            "https://schema.coypu.org/global#Event"
+        ],
+        "http://www.w3.org/2000/01/rdf-schema#comment": [
+            {
+                "@value": "A shooting has been reported at Saugus High School in Santa Clarita just north of Los Angeles."
+            }
+        ],
+        "https://schema.coypu.org/global#hasEventType": [
+            {
+                "@id": "http://www.wikidata.org/entity/Q2252077"
+            }
+        ],
+        "https://schema.coypu.org/global#hasLocality": [
+            {
+                "@id": "http://www.wikidata.org/entity/Q491132"
+            },
+            {
+                "@id": "http://www.wikidata.org/entity/Q65"
+            }
+        ],
+        "https://schema.coypu.org/global#hasPublisher": [
+            {
+                "@value": "HiTec"
+            }
+        ],
+        "https://schema.coypu.org/global#hasTimestamp": [
+            {
+                "@value": "22_11_2022_17_31_33"
+            }
+        ]
+    }
+]

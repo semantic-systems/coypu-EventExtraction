@@ -1,8 +1,5 @@
 import torch
 from typing import List, Union, Optional
-from datetime import datetime
-
-from models.entity_linking.OpenTapiocaEntityLinker import OpenTapiocaEntityLinker
 from models.event_argument_extraction.FalconEventArgumentExtractor import FalconEventArgumentExtractor
 from models.event_argument_extraction.OpenTapiocaArgumentExtractor import OpenTapiocaArgumentExtractor
 from models.event_argument_extraction.RebelEventArgumentExtractor import RebelEventArgumentExtractor
