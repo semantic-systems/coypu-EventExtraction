@@ -1,7 +1,7 @@
 from typing import List
 import spacy
 from Linker import Linker
-from rdflib import Graph, Literal, BNode, Namespace
+from rdflib import Graph, Literal, BNode, Namespace, URIRef
 from rdflib.namespace import FOAF, RDF, RDFS
 
 class OpenTapiocaEntityLinker(Linker):
@@ -34,33 +34,32 @@ class OpenTapiocaText2Graph(Linker):
         return [(span.text, span.kb_id_, span.label_, span._.description) for span in model_output.ents]
 
     # get output from 
-    def list2Graph(self, text):
+    def list2Graph(self, text, type = str):
         info = self.forward(text)
         # first fix naming space
         coy = Namespace("https://schema.coypu.org/global#")
-        wd = Namespace("https://www.wikidata.org/wiki/")
 
 
         g = Graph()
         g.bind("rdfs", RDFS)
         g.bind("rdf", RDF)
         g.bind("coy", coy)
-        g.bind('wd', wd)
         g.bind("foaf", FOAF)
 
         current = BNode()  # a GUID is generated
 
         for item in info:
+            ID  = URIRef("http://www.wikidata.org/entity/"+item[1])
             if item[2] == "PERSON":
                 # relations need to be found somewhere else
-                # wikidata expression needs to be changed
-                g.add((current, coy.hasPeople, Literal("wd:"+item[1])))
+                g.add((current, coy.hasImpactOn, ID))
             if item[2] == "LOC":
-                g.add((current, coy.hasPlace, Literal("wd:"+item[1])))
+                g.add((current, coy.hasLocality, ID))
             if item[2] == "ORG":
-                g.add((current, coy.hasOrg, Literal("wd:"+item[1])))
-        g.add((current, RDF.type, Literal("UnKnown")))
-        g.add((current, coy.hasEventType, Literal("Unknown")))
+                g.add((current, coy.hasImpactOn, ID))
+        # event type
+        g.add((current, RDF.type, Literal(type)))
+        g.add((current, coy.hasEventType, Literal(type)))
         g.add((current, RDFS.comment, Literal(text)))
         g.add((current, coy.hasPublisher, Literal("HiTec")))
         g.serialize(format='json-ld', indent=4, destination="test.jsonld")
