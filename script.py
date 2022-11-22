@@ -1,7 +1,8 @@
 from event_extractor import EventExtractor
 from flask import abort, Flask, jsonify, request
 from flask_healthz import healthz
-from models.event_argument_extraction.RebelEventArgumentExtractor import RebelEventArgumentExtractor
+
+from models.event_argument_extraction.OpenTapiocaArgumentExtractor import OpenTapiocaArgumentExtractor
 from models.event_detection.EventDetector import EventDetector
 
 app = Flask(__name__)
@@ -25,7 +26,7 @@ app.config.update(
 )
 
 event_detector = EventDetector()
-event_argument_extractor = RebelEventArgumentExtractor()
+event_argument_extractor = OpenTapiocaArgumentExtractor()
 event_extractor = EventExtractor(event_detector=event_detector, event_argument_extractor=event_argument_extractor)
 
 
