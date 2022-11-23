@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     title = "Hitec Event Extraction Demo v2"
     description = "Event Detector: crisis-related LM + supervised contrastive learning on TREC-IS dataset. \n\n " \
-                  "Event Argument Extractor: generic knowledge extraction module (open tapioca).\n\n " \
+                  "Event Argument Extractor: wikidata-based knowledge extraction module.\n\n " \
                   "(paste the extracted event graph [here](https://json-ld.org/playground) to see the visualization!)"
     article = '<img src="https://lh5.googleusercontent.com/5BFOPuJcVnIYF4P5bmvxTAYoD2cLsqFa_FZUyyUqYCivGq3XdfEPQJ_EvOMdwHD84957qvcitITbAMlKZi5E1nTBjrLXeG7rxPl2FbjJ_I8Ka7gnn7lX7ce1ZZUMlfzjn5R9hztf_q2K3T_lWMDki6AdtFuHT-YeikcG0j8QXCeWzONg6-t3e4NC4gmF" width=150px><img src="https://lh5.googleusercontent.com/vq_hxMF8lqmXdxIQJJGwq9SPRrE15SFRwCWHBWZXlFS_10LTAuzHmcx-1NUYznbXwH02KZgjpwz5eYM-j5m3RUOhW90rDV9uFj-30dBg7kS6irstL3_VHuHkOe5jskDM2-rTLAKhchDlrH3hAG8W9o9XIlzxWD-tQoj83oyrv6NVmsjhmAPR6ohDsmED" width=150px>'
     with gr.Blocks() as d:
