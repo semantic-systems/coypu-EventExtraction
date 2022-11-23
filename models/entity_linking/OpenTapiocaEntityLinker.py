@@ -15,9 +15,4 @@ class OpenTapiocaEntityLinker(Linker):
 
     def forward(self, text: str) -> List:
         model_output = self.model(text)
-        return [(span.text, span.kb_id_, span.label_) for span in model_output.ents]
-
-
-if __name__ == "__main__":
-    test = OpenTapiocaEntityLinker()
-    print(test.forward('Germany'))
+        return [(span.text, span.kb_id_, span.label_, span._.description) for span in model_output.ents]
