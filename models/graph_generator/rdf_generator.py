@@ -2,7 +2,7 @@ import json
 import uuid
 from datetime import datetime
 from typing import Optional
-
+from pathlib import Path
 from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import FOAF, RDF, RDFS
 from schemes import EventDetectorOutput, EventArgumentExtractorOutput
@@ -14,6 +14,8 @@ class RDFGenerator(object):
                 event_detector_output: EventDetectorOutput,
                 event_argument_extractor_output: EventArgumentExtractorOutput,
                 path_to_jsonld: Optional[str] = "/data/output.jsonld"):
+        if not Path("/data").exists():
+            Path("/data").mkdir()
         # first fix naming space
         coy = Namespace("https://schema.coypu.org/global#")
 
@@ -48,7 +50,3 @@ class RDFGenerator(object):
         now = datetime.now()
         dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
         return dt_string
-
-
-if __name__ == "__main__":
-    RDFGenerator.convert("Christian Drosten works in Germany for Apple company during the covid outbreak.")
