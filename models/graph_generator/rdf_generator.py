@@ -13,9 +13,9 @@ class RDFGenerator(object):
     def convert(self,
                 event_detector_output: EventDetectorOutput,
                 event_argument_extractor_output: EventArgumentExtractorOutput,
-                path_to_jsonld: Optional[str] = "/data/output.jsonld"):
-        if not Path("/data").exists():
-            Path("/data").mkdir()
+                path_to_jsonld: Optional[str] = "../data/output.jsonld"):
+        if not Path("../data").exists():
+            Path("../data").mkdir()
         # first fix naming space
         coy = Namespace("https://schema.coypu.org/global#")
 
