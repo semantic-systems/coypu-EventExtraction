@@ -1,6 +1,12 @@
-version: "1.0"
+version: "3"
 services:
   event_extractor:
     build: .
     ports:
       - "5278:5278"
+    networks:
+      - demo_network
+
+networks:
+  demo_network:
+    external: true

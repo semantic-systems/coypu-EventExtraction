@@ -13,6 +13,7 @@ RUN \
 
 COPY requirements.txt /src/
 RUN pip install -r /src/requirements.txt
+RUN pip install --upgrade --no-cache-dir gdown
 RUN mkdir -p /data
 COPY . /src/
 WORKDIR src

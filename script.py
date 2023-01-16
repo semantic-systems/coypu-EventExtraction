@@ -1,3 +1,5 @@
+import os.path
+
 from event_extractor import EventExtractor
 from flask import abort, Flask, jsonify, request
 from flask_healthz import healthz
@@ -23,7 +25,6 @@ app.config.update(
         "ready": app.name + ".readiness"
     }
 )
-
 event_detector = EventDetector()
 event_argument_extractor = OpenTapiocaArgumentExtractor()
 event_extractor = EventExtractor(event_detector=event_detector, event_argument_extractor=event_argument_extractor)
@@ -32,6 +33,7 @@ event_extractor = EventExtractor(event_detector=event_detector, event_argument_e
 @app.route('/', methods=['POST'])
 def flask():
     if not request.json or not 'message' in request.json:
+        print(request.json)
         abort(400)
 
     message = request.json['message']
