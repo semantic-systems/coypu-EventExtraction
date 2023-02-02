@@ -5,10 +5,11 @@ from models.event_argument_extraction.FalconEventArgumentExtractor import Falcon
 from models.event_argument_extraction.OpenTapiocaArgumentExtractor import OpenTapiocaArgumentExtractor
 from models.event_argument_extraction.RebelEventArgumentExtractor import RebelEventArgumentExtractor
 from models.event_detection.EventDetector import EventDetector
+from models.event_detection.ESGEventDetector import ESGEventDetector
 from models.graph_generator.rdf_generator import RDFGenerator
 from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput
 
-EventDetectorType = Union[torch.nn.Module, EventDetector]
+EventDetectorType = Union[torch.nn.Module, EventDetector, ESGEventDetector]
 EventArgumentExtractorType = Union[torch.nn.Module, FalconEventArgumentExtractor, RebelEventArgumentExtractor,
                                    OpenTapiocaArgumentExtractor]
 
@@ -41,7 +42,7 @@ class EventExtractor(object):
 
 
 if __name__ == '__main__':
-    event_detector = EventDetector()
+    event_detector = ESGEventDetector()
     event_argument_extractor = OpenTapiocaArgumentExtractor()
     event_extractor = EventExtractor(event_detector=event_detector, event_argument_extractor=event_argument_extractor)
     import gradio as gr
