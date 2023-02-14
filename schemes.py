@@ -40,8 +40,7 @@ class LinkedEntity:
 class EventExtractorOutput:
     tweet: str
     event_type: Optional[str]
-    event_arguments: Optional[List[LinkedEntity]]
-    event_graph: Optional[List[Dict]]
+    wikidata_link: Optional[str]
 
 
 @dataclass

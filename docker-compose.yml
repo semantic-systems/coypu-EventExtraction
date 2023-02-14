@@ -3,9 +3,10 @@ services:
   event_extractor:
     build: .
     ports:
-      - "5278:5278"
+      - "5279:5279"
     networks:
       - demo_network
+    image: esg_event_type_detector
 
 networks:
   demo_network:

@@ -25,8 +25,7 @@ app.config.update(
     }
 )
 event_detector = ESGEventDetector()
-event_argument_extractor = OpenTapiocaArgumentExtractor()
-event_extractor = EventExtractor(event_detector=event_detector, event_argument_extractor=event_argument_extractor)
+event_extractor = EventExtractor(event_detector=event_detector, event_argument_extractor=None)
 
 
 @app.route('/', methods=['POST'])
@@ -39,11 +38,10 @@ def flask():
 
     output = event_extractor.infer(message)
 
-    response = {'message': message, 'event type': output[0], 'event arguments': output[1],
-                'event graph': output[2]}
+    response = {'message': message, 'event type': output[0]}
     return jsonify(response), 200
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5278)
+    app.run(host='0.0.0.0', port=5279)
 
