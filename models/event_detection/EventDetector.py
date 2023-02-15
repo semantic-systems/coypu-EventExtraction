@@ -65,7 +65,7 @@ class EventDetector(BaseComponent):
         if not Path(path_to_pretrained_model).exists():
             if not Path("/data/event_detector").exists():
                 Path("/data/event_detector").mkdir()
-            gdown.download(url="https://drive.google.com/file/d/1Hj_s7UfKYOMszQYAYLy0iNFN1qD1wxrH/view?usp=share_link",
+            gdown.download(url="https://drive.google.com/file/d/1Hj_s7UfKYOMszQYAYLy0iNFN1qD1wxrH/view?usp=sharing&confirm=t",
                            output=path_to_pretrained_model, fuzzy=True)
         if not Path("/data/language_models/CoyPu-CrisisLM-v1").exists():
             if not Path("/data/language_models/").exists():
