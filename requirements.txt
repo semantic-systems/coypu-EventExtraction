@@ -16,3 +16,4 @@ flask
 flask_healthz
 rdflib
 rdflib-jsonld
+requests-cache
