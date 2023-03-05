@@ -7,8 +7,13 @@ from flair.models import SequenceTagger
 import ipdb
 import sys
 import io
-# please install blink as BLINK with pip install -e
+# please install blink as BLINK with 
+# pip install -e git+https://github.com/facebookresearch/BLINK#egg=BLINK
+
 # the above code shall generate a directory called scr in the current dir and install BLINK as a package.
+# change two files in src:
+# in download_blink_model.sh: change line13 to : ROOD_DIR=$(dirname "$0")
+# replace main_dense.py by the script i uploaded
 
 # go to `src/blink`, execute to download all needed files (this will take a while):
 # chmod +x download_blink_models.sh
