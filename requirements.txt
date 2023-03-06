@@ -25,3 +25,4 @@ faiss-cpu
 gensim==3.8.3
 flair
 pytorch_transformers
+requests-cache
