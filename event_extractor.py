@@ -4,13 +4,14 @@ from typing import List, Union, Optional
 from models.event_argument_extraction.FalconEventArgumentExtractor import FalconEventArgumentExtractor
 from models.event_argument_extraction.OpenTapiocaArgumentExtractor import OpenTapiocaArgumentExtractor
 from models.event_argument_extraction.RebelEventArgumentExtractor import RebelEventArgumentExtractor
+from models.entity_linking.BLINKEntityLinker import BLINKEntityLinker
 from models.event_detection.EventDetector import EventDetector
 from models.graph_generator.rdf_generator import RDFGenerator
 from schemes import EventExtractorOutput, EventDetectorOutput, EventArgumentExtractorOutput
 
 EventDetectorType = Union[torch.nn.Module, EventDetector]
 EventArgumentExtractorType = Union[torch.nn.Module, FalconEventArgumentExtractor, RebelEventArgumentExtractor,
-                                   OpenTapiocaArgumentExtractor]
+                                   OpenTapiocaArgumentExtractor, BLINKEntityLinker]
 
 
 class EventExtractor(object):
@@ -42,7 +43,7 @@ class EventExtractor(object):
 
 if __name__ == '__main__':
     event_detector = EventDetector()
-    event_argument_extractor = OpenTapiocaArgumentExtractor()
+    event_argument_extractor = BLINKEntityLinker()
     event_extractor = EventExtractor(event_detector=event_detector, event_argument_extractor=event_argument_extractor)
     import gradio as gr
 

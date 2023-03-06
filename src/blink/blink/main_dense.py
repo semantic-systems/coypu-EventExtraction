@@ -606,14 +606,14 @@ if __name__ == "__main__":
         "--biencoder_model",
         dest="biencoder_model",
         type=str,
-        default="models/biencoder_wiki_large.bin",
+        default="./src/blink/models/biencoder_wiki_large.bin",
         help="Path to the biencoder model.",
     )
     parser.add_argument(
         "--biencoder_config",
         dest="biencoder_config",
         type=str,
-        default="models/biencoder_wiki_large.json",
+        default="./src/blink/models/biencoder_wiki_large.json",
         help="Path to the biencoder configuration.",
     )
     parser.add_argument(
@@ -621,7 +621,7 @@ if __name__ == "__main__":
         dest="entity_catalogue",
         type=str,
         # default="models/tac_entity.jsonl",  # TAC-KBP
-        default="models/entity.jsonl",  # ALL WIKIPEDIA!
+        default="./src/blink/models/entity.jsonl",  # ALL WIKIPEDIA!
         help="Path to the entity catalogue.",
     )
     parser.add_argument(
@@ -629,7 +629,7 @@ if __name__ == "__main__":
         dest="entity_encoding",
         type=str,
         # default="models/tac_candidate_encode_large.t7",  # TAC-KBP
-        default="models/all_entities_large.t7",  # ALL WIKIPEDIA!
+        default="./src/blink/models/all_entities_large.t7",  # ALL WIKIPEDIA!
         help="Path to the entity catalogue.",
     )
 
@@ -638,14 +638,14 @@ if __name__ == "__main__":
         "--crossencoder_model",
         dest="crossencoder_model",
         type=str,
-        default="models/crossencoder_wiki_large.bin",
+        default="./src/blink/models/crossencoder_wiki_large.bin",
         help="Path to the crossencoder model.",
     )
     parser.add_argument(
         "--crossencoder_config",
         dest="crossencoder_config",
         type=str,
-        default="models/crossencoder_wiki_large.json",
+        default="./src/blink/models/crossencoder_wiki_large.json",
         help="Path to the crossencoder configuration.",
     )
 

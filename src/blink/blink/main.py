@@ -1,27 +1,13 @@
-from models.entity_linking.Linker import Linker
-from torch.utils.data import DataLoader, SequentialSampler
-from flair.data import Sentence
 from flair.models import SequenceTagger
+from flair.data import Sentence
+from torch.utils.data import DataLoader, SequentialSampler
 import argparse
 import src.blink.blink.main_dense as main_dense
 from src.blink.blink.main_dense import _run_biencoder
 from src.blink.blink.biencoder.data_process import process_mention_data
-from schemes import LinkedEntity, EventArgumentExtractorOutput
-
-# please install blink as BLINK with 
-# pip install -e git+https://github.com/facebookresearch/BLINK#egg=BLINK
-
-# the above code shall generate a directory called scr in the current dir and install BLINK as a package.
-# change two files in src:
-# in download_blink_model.sh: change line13 to : ROOD_DIR=$(dirname "$0")
-# replace main_dense.py by the script i uploaded
-
-# go to `src/blink`, execute to download all needed files (this will take a while):
-# chmod +x download_blink_models.sh
-#./download_blink_models.sh
 
 
-MODEL_PATH = "/data/blink/models" #"./src/blink/models/"
+MODEL_PATH = "../models/"#"/data/blink/models/"
 
 
 class FlairNER(object):
@@ -47,9 +33,8 @@ class FlairNER(object):
                 "end_positions": end_positions, "confidences": confidences}
 
 
-class BLINKEntityLinker(Linker):
+class BLINKEntityLinker(object):
     def __init__(self):
-        super(BLINKEntityLinker, self).__init__()
         self.ner = FlairNER()
         self.instantiate_blink_models()
         self.id2url = {v: "https://en.wikipedia.org/wiki?curid=%s" % k for k, v in self.wikipedia_id2local_id.items()}
@@ -60,7 +45,7 @@ class BLINKEntityLinker(Linker):
             "test_entities": None,
             "test_mentions": None,
             "interactive": False,
-            "top_k": 1,
+            "top_k": 10,
             "biencoder_model": models_path + "biencoder_wiki_large.bin",
             "biencoder_config": models_path + "biencoder_wiki_large.json",
             "entity_catalogue": models_path + "entity.jsonl",
@@ -80,22 +65,18 @@ class BLINKEntityLinker(Linker):
         dataloader = self.process_biencoder_dataloader(
             samples, self.biencoder.tokenizer, self.biencoder_params
         )
-        top_k = 1
+        top_k = 10
         labels, nns, scores = _run_biencoder(
             self.biencoder, dataloader, self.candidate_encoding, top_k, self.faiss_indexer
         )
         entities = []
-        event_arguments = []
         for entity_list, sample in zip(nns, samples):
             e_id = entity_list[0]
             e_title = self.id2title[e_id]
             e_text = self.id2text[e_id]
             e_url = self.id2url[e_id]
             entities.append((e_id, e_title, e_text, e_url))
-            linked_entity = LinkedEntity(entity=sample["mention"], id=f"Q{e_id}", label=sample["label"],
-                                         description=e_text)
-            event_arguments.append(linked_entity)
-        return EventArgumentExtractorOutput(tweet=text, event_arguments=event_arguments)
+        return entities
 
     def annotate(self, input_sentence):
         ner_output_data = self.ner.predict(input_sentence)
@@ -139,5 +120,7 @@ class BLINKEntityLinker(Linker):
 
 
 if __name__ == "__main__":
-    test = BLINKEntityLinker()
-    print(test.forward("Shakespeare s account of the Roman general Julius Caesar's murder by his friend Brutus is a meditation on duty."))
+    linker = BLINKEntityLinker()
+    text = input("insert text:")
+    # text = "Shakespeare s account of the Roman general Julius Caesar's murder by his friend Brutus is a meditation on duty."
+    print(linker.forward(text))

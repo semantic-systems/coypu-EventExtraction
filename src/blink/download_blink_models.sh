@@ -10,8 +10,8 @@
 set -e
 set -u
 
-ROOD_DIR="$(realpath $(dirname "$0"))"
-DST_DIR="$ROOD_DIR/models"
+ROOD_DIR="/data/coypu/static-data/static/"
+DST_DIR="$ROOD_DIR/blink"
 
 mkdir -p "$DST_DIR"
 cd "$DST_DIR"
