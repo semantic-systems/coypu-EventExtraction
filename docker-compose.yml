@@ -8,7 +8,7 @@ services:
       - demo_network
     restart: unless-stopped
     volumes:
-      - /data/coypu/static-data/static/blink:/data/blink/models
+      - /data/coypu/static-data/static/blink/:/data/blink/models/
     container_name: event_extractor_test
     image: event_extractor_test
 
