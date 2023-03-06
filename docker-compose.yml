@@ -6,6 +6,7 @@ services:
       - "5278:5278"
     networks:
       - demo_network
+    restart: unless-stopped
     volumes:
       - /data/coypu/static-data/static/blink:/data/blink/models
 
