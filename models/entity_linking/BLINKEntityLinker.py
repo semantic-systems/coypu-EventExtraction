@@ -21,7 +21,7 @@ from schemes import LinkedEntity, EventArgumentExtractorOutput
 #./download_blink_models.sh
 
 
-MODEL_PATH = "/data/blink/models" #"./src/blink/models/"
+MODEL_PATH = "/data/blink/models/" #"./src/blink/models/"
 
 
 class FlairNER(object):
