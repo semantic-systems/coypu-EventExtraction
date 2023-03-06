@@ -23,3 +23,5 @@ colorama==0.4.3
 termcolor==1.1.0
 faiss-cpu
 gensim==3.8.3
+flair
+pytorch_transformers

@@ -15,18 +15,18 @@ import numpy as np
 from colorama import init
 from termcolor import colored
 
-import blink.ner as NER
+import src.blink.blink.ner as NER
 from torch.utils.data import DataLoader, SequentialSampler, TensorDataset
-from blink.biencoder.biencoder import BiEncoderRanker, load_biencoder
-from blink.crossencoder.crossencoder import CrossEncoderRanker, load_crossencoder
-from blink.biencoder.data_process import (
+from src.blink.blink.biencoder.biencoder import BiEncoderRanker, load_biencoder
+from src.blink.blink.crossencoder.crossencoder import CrossEncoderRanker, load_crossencoder
+from src.blink.blink.biencoder.data_process import (
     process_mention_data,
     get_candidate_representation,
 )
-import blink.candidate_ranking.utils as utils
-from blink.crossencoder.train_cross import modify, evaluate
-from blink.crossencoder.data_process import prepare_crossencoder_data
-from blink.indexer.faiss_indexer import DenseFlatIndexer, DenseHNSWFlatIndexer
+import src.blink.blink.candidate_ranking.utils as utils
+from src.blink.blink.crossencoder.train_cross import modify, evaluate
+from src.blink.blink.crossencoder.data_process import prepare_crossencoder_data
+from src.blink.blink.indexer.faiss_indexer import DenseFlatIndexer, DenseHNSWFlatIndexer
 
 
 HIGHLIGHTS = [

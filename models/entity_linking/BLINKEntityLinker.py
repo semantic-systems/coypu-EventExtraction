@@ -1,10 +1,10 @@
+import os
 from typing import List
 from Linker import Linker
-import blink.main_dense as main_dense
+import src.blink.blink.main_dense as main_dense
 import argparse
 from flair.data import Sentence
 from flair.models import SequenceTagger
-import ipdb
 import sys
 import io
 # please install blink as BLINK with 
@@ -19,13 +19,16 @@ import io
 # chmod +x download_blink_models.sh
 #./download_blink_models.sh
 
+MODEL_PATH = "/data/blink/models/"
+
+
 class BLINKEntityLinker(Linker):
     def __init__(self):
         super(BLINKEntityLinker, self).__init__()
 
     @staticmethod
     def instantiate():
-        models_path = "src/blink/models/"
+        models_path = MODEL_PATH
         config = {
             "test_entities": None,
             "test_mentions": None,
@@ -55,7 +58,6 @@ class BLINKEntityLinker(Linker):
         for ner_pair in NerOut:
             mention, label = ner_pair[0], ner_pair[1]
             WikiIDs = self.runBLINK(ner_pair[0], text)
-            ipdb.set_trace()
             WikiID, WikiStr =  WikiIDs[0][0][1],WikiIDs[0][0][0]
             out.append((mention, WikiID, WikiStr,label))
             
@@ -87,7 +89,7 @@ class BLINKEntityLinker(Linker):
     # output a list of possible wikiIDs.
     # you could adjust the top_k para to get more possible candidate
     def runBLINK(self, mention: str, text: str):
-        models_path = "src/blink/models/"
+        models_path = MODEL_PATH
         config = {
             "test_entities": None,
             "test_mentions": None,
@@ -119,5 +121,6 @@ class BLINKEntityLinker(Linker):
 
 
 if __name__ == "__main__":
+    print(os.getcwd())
     test = BLINKEntityLinker()
     print(test.forward("Shakespeare s account of the Roman general Julius Caesar's murder by his friend Brutus is a meditation on duty."))
