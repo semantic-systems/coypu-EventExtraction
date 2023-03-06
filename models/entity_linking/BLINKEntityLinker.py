@@ -140,4 +140,5 @@ class BLINKEntityLinker(Linker):
 
 if __name__ == "__main__":
     test = BLINKEntityLinker()
-    print(test.forward("Shakespeare s account of the Roman general Julius Caesar's murder by his friend Brutus is a meditation on duty."))
+    text = input("insert text:")
+    print(test.forward(text))

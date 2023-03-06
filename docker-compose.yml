@@ -3,12 +3,14 @@ services:
   event_extractor:
     build: .
     ports:
-      - "5278:5278"
+      - "5280:5278"
     networks:
       - demo_network
     restart: unless-stopped
     volumes:
       - /data/coypu/static-data/static/blink:/data/blink/models
+    container_name: event_extractor_test
+    image: event_extractor_test
 
 networks:
   demo_network:
