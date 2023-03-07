@@ -25,7 +25,7 @@ class RDFGenerator(object):
         g = Graph()
         try:
             wikidata_coy_mappings_doc = session.get(coy_ontology_address).content
-            g.load(wikidata_coy_mappings_doc, format='ttl')
+            g.parse(wikidata_coy_mappings_doc, format='ttl')
         except BadSyntax as e:
             logger.error(
                 f'Content of retrieved document from {coy_ontology_address} '
