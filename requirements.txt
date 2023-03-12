@@ -22,3 +22,6 @@ colorama==0.4.3
 termcolor==1.1.0
 pytorch_transformers
 requests-cache
+scikit-learn
+plotly
+gdeltdoc
