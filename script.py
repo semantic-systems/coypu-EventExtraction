@@ -1,6 +1,8 @@
 from flask import abort, Flask, jsonify, request
 from flask_healthz import healthz
 from models.event_detection.EventDetector import EventDetector, GdeltFunctions
+import json
+
 
 app = Flask(__name__)
 
@@ -24,6 +26,7 @@ app.config.update(
 event_detector = EventDetector()
 api = GdeltFunctions()
 
+
 @app.route('/', methods=['POST'])
 def flask():
     if not request.json or not 'message' in request.json:
@@ -33,11 +36,16 @@ def flask():
     message = request.json['message']
     sentences, description = api.get_feed(message)
     descriptions += description
-    fig_cls, fig_cluster, description = event_detector.forward_batch(message)
+    description = event_detector.forward_batch(message)
     descriptions += description
-
-    response = {'message': message, 'fig_cls': fig_cls, 'fig_cluster': fig_cluster,
-                'descriptions': descriptions}
+    with open("./fig_cls.json", 'r') as f:
+        fig_cls = json.load(f)
+    with open("./fig_cluster.json", 'r') as f:
+        fig_cluster = json.load(f)
+    response = {'message': message,
+                'descriptions': descriptions,
+                "fig_cls": fig_cls,
+                "fig_cluster": fig_cluster}
     return jsonify(response), 200
 
 

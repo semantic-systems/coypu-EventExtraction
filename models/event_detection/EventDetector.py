@@ -3,6 +3,7 @@ import re
 import gdown
 import gradio as gr
 import pandas as pd
+import plotly
 import torch
 from torch import tensor
 from typing import Optional, Tuple
@@ -27,8 +28,8 @@ logging.set_verbosity_error()
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-DEFAULT_OUTPUT_PATH = '/data/event_detector/'
-DEFAULT_LANGUAGE_MODELS_PATH = '/data/language_models/'
+DEFAULT_OUTPUT_PATH = '../../../data/event_detector/'
+DEFAULT_LANGUAGE_MODELS_PATH = '../../../data/language_models/'
 
 
 @dataclass
@@ -104,7 +105,9 @@ class EventDetector(BaseComponent):
         n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
 
         description = f"Estimated number of clusters: {n_clusters_}\n"
-        return fig_cls, fig_cluster, description
+        fig_cls.write_json("./fig_cls.json")
+        fig_cluster.write_json("./fig_cluster.json")
+        return description
 
     def reduce_with_PCA(self, features):
         return self.pca.fit_transform(features)
@@ -178,12 +181,14 @@ if __name__ == "__main__":
         descriptions = ""
         sentences, description = api.get_feed(keyword)
         descriptions += description
-        fig_cls, fig_cluster, description = model.forward_batch(sentences)
+        fig_cls_dict, fig_cluster_dict, description = model.forward_batch(sentences)
         descriptions += description
         descriptions += "\n Note:\n " \
                         "- oos refers to an out-of-scope class.\n" \
                         "- DBSCAN is used as the clustering algorithm.\n" \
                         "- PC 1 and PC 2 refers to the first and the second principal components of the sentence embeddings, when reduced to two dimensions.\n"
+        fig_cls = plotly.io.read_json("./fig_cls.json")
+        fig_cluster = plotly.io.read_json("./fig_cluster.json")
         return descriptions, fig_cls, fig_cluster
 
     with gr.Blocks() as d:
