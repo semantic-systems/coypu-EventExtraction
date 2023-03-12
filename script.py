@@ -36,7 +36,7 @@ def flask():
     message = request.json['message']
     sentences, description = api.get_feed(message)
     descriptions += description
-    description = event_detector.forward_batch(message)
+    description = event_detector.forward_batch(sentences)
     descriptions += description
     with open("./fig_cls.json", 'r') as f:
         fig_cls = json.load(f)
