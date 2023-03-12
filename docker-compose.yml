@@ -1,16 +1,14 @@
 version: "3"
 services:
-  event_extractor:
+  event_visualizer:
     build: .
     ports:
-      - "5280:5278"
+      - "5281:5000"
     networks:
       - demo_network
     restart: unless-stopped
-    volumes:
-      - /data/coypu/static-data/static/blink/:/data/blink/models/
-    container_name: event_extractor_test
-    image: event_extractor_test
+    container_name: event_visualizer_container
+    image: event_visualizer_image
 
 networks:
   demo_network:

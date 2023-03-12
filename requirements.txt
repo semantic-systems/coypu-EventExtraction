@@ -10,8 +10,7 @@ torchvision
 transformers
 emoji
 nltk
-spacyopentapioca
-gradio
+gradio==3.8.0
 flask
 flask_healthz
 rdflib
@@ -21,8 +20,5 @@ numpy==1.17.2
 segtok==1.5.7
 colorama==0.4.3
 termcolor==1.1.0
-faiss-cpu
-gensim==3.8.3
-flair
 pytorch_transformers
 requests-cache
