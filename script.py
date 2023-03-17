@@ -38,10 +38,14 @@ def flask():
     descriptions += description
     description = event_detector.forward_batch(data)
     descriptions += description
-    with open("./fig_cls.json", 'r') as f:
-        fig_cls = json.load(f)
-    with open("./fig_cluster.json", 'r') as f:
-        fig_cluster = json.load(f)
+    try:
+        with open("./fig_cls.json", 'r') as f:
+            fig_cls = json.load(f)
+        with open("./fig_cluster.json", 'r') as f:
+            fig_cluster = json.load(f)
+    except:
+        fig_cls = None
+        fig_cluster = None
     response = {'message': message,
                 'descriptions': descriptions,
                 "fig_cls": fig_cls,
