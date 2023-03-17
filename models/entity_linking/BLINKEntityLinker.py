@@ -58,7 +58,7 @@ class BLINKEntityLinker(Linker):
 
     @staticmethod
     def get_wikipedia_to_wikidata_mapper():
-        with open("/data/blink/wikipedia_wikidata_mapping.json", "r") as f:
+        with open(f"{MODEL_PATH}wikipedia_wikidata_mapping.json", "r") as f:
             mapper = json.load(f)
         return mapper
 
