@@ -101,9 +101,9 @@ class EventDetector(BaseComponent):
         df["clustered label"] = labels
         df["clustered label"] = df["clustered label"].astype(str)
         fig_cls = px.scatter(df, x="PC 1", y="PC 2", color="event type", hover_data=['sentences', "url"]) #,width=1000, height=700)
-        fig_cls.update_traces(marker_size=15)
+        fig_cls.update_traces(marker_size=10)
         fig_cluster = px.scatter(df, x="PC 1", y="PC 2", color="clustered label", hover_data=['sentences', "url"]) #, width=1065, height=700)
-        fig_cluster.update_traces(marker_size=15)
+        fig_cluster.update_traces(marker_size=10)
         # Number of clusters in labels, ignoring noise if present.
         n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
 
@@ -113,12 +113,12 @@ class EventDetector(BaseComponent):
             xaxis_title="Principal Component 1",
             yaxis_title="Principal Component 2",
             font=dict(
-                size=15
+                size=12
             ),
             hoverlabel=dict(
-                font_size=15,
+                font_size=12,
             ),
-            margin=dict(l=20, r=20, t=20, b=20),
+            margin=dict(l=15, r=15, t=15, b=15),
             paper_bgcolor="#E8E8DC"
         )
         fig_cluster.update_layout(
@@ -127,12 +127,12 @@ class EventDetector(BaseComponent):
             xaxis_title="Principal Component 1",
             yaxis_title="Principal Component 2",
             font=dict(
-                size=15
+                size=12
             ),
             hoverlabel=dict(
-                font_size=15,
+                font_size=12,
             ),
-            margin=dict(l=20, r=20, t=20, b=20),
+            margin=dict(l=15, r=15, t=15, b=15),
             paper_bgcolor="#E8E8DC"
         )
         fig_cls.write_json("./fig_cls.json")
