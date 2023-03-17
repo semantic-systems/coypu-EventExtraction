@@ -213,7 +213,10 @@ class GdeltFunctions:
 
         # Search for articles matching the filters
         articles = self.api.article_search(f)
-        english_articles = articles[articles['language'] == lang]
+        try:
+            english_articles = articles[articles['language'] == lang]
+        except:
+            english_articles = []
         description = f"{len(articles)} articles found with the keyword {query}, among which {len(english_articles)} articles are in English.\n"
         # timestamp = [datetime.strftime(date, "%Y%m%dT%H%M%SZ") for date in english_articles["seendate"].values]
         data["title"] = [self.clean_feed(title) for title in english_articles['title'].values]
