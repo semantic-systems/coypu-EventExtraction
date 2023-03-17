@@ -9,6 +9,8 @@ services:
     restart: unless-stopped
     container_name: event_visualizer_container
     image: event_visualizer_image
+    volumes:
+      - /data/coypu/static-data/models/demo/:/data/
 
 networks:
   demo_network:

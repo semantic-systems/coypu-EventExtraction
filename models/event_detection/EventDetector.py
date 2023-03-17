@@ -53,7 +53,7 @@ class EventDetector(BaseComponent):
             path_to_pretrained_model: str = os.path.join(DEFAULT_OUTPUT_PATH, "crisisbert_w_oos_linear.pt")
     ):
         super(EventDetector).__init__()
-        self.prepare(path_to_pretrained_model)
+        # self.prepare(path_to_pretrained_model)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         checkpoint = torch.load(path_to_pretrained_model, map_location=self.device)
         checkpoint['config']['model']["from_pretrained"] = \
