@@ -113,13 +113,13 @@ class EventDetector(BaseComponent):
             xaxis_title="Principal Component 1",
             yaxis_title="Principal Component 2",
             font=dict(
-                size=18
+                size=15
             ),
             hoverlabel=dict(
                 font_size=15,
             ),
-            margin=dict(l=80, r=80, t=80, b=80),
-            paper_bgcolor="white"
+            margin=dict(l=20, r=20, t=20, b=20),
+            paper_bgcolor="#E8E8DC"
         )
         fig_cluster.update_layout(
             title="Event Visualization with Clustering Result",
@@ -127,13 +127,13 @@ class EventDetector(BaseComponent):
             xaxis_title="Principal Component 1",
             yaxis_title="Principal Component 2",
             font=dict(
-                size=18
+                size=15
             ),
             hoverlabel=dict(
                 font_size=15,
             ),
-            margin=dict(l=80, r=80, t=80, b=80),
-            paper_bgcolor="white"
+            margin=dict(l=20, r=20, t=20, b=20),
+            paper_bgcolor="#E8E8DC"
         )
         fig_cls.write_json("./fig_cls.json")
         fig_cluster.write_json("./fig_cluster.json")
