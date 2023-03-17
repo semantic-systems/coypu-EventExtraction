@@ -78,7 +78,7 @@ class EventDetector(BaseComponent):
 
     def forward_batch(self, data: dict) -> str:
         sentences = data["title"]
-        if not sentences:
+        if len(sentences) == 0:
             description = f"No English articles found with the provided keywords!\n"
             return description
         tokenized_text = self.model.tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
@@ -229,7 +229,7 @@ class GdeltFunctions:
         #             time_object = datetime.strptime(timestamp, "%Y%m%dT%H%M%SZ")
         #             if timeline[i] <= time_object < timeline[i+1]:
         #                 timeline_count[timeline[i].strftime("%Y-%m-%d %H:%M:%S")] += 1
-        if not english_articles:
+        if len(english_articles) == 0:
             description = ""
         return data, description
 
