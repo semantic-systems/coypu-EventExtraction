@@ -1,3 +1,4 @@
+import json
 from models.entity_linking.Linker import Linker
 from torch.utils.data import DataLoader, SequentialSampler
 from flair.data import Sentence
@@ -21,7 +22,7 @@ from schemes import LinkedEntity, EventArgumentExtractorOutput
 #./download_blink_models.sh
 
 
-MODEL_PATH = "/data/blink/models/" #"./src/blink/models/"
+MODEL_PATH = "/data/blink/models/" #"../../src/blink/models/"
 
 
 class FlairNER(object):
@@ -53,6 +54,13 @@ class BLINKEntityLinker(Linker):
         self.ner = FlairNER()
         self.instantiate_blink_models()
         self.id2url = {v: "https://en.wikipedia.org/wiki?curid=%s" % k for k, v in self.wikipedia_id2local_id.items()}
+        self.wikipedia_to_wikidata_mapper = self.get_wikipedia_to_wikidata_mapper()
+
+    @staticmethod
+    def get_wikipedia_to_wikidata_mapper():
+        with open("/data/blink/wikipedia_wikidata_mapping.json", "r") as f:
+            mapper = json.load(f)
+        return mapper
 
     def instantiate_blink_models(self):
         models_path = MODEL_PATH
@@ -91,8 +99,10 @@ class BLINKEntityLinker(Linker):
             e_title = self.id2title[e_id]
             e_text = self.id2text[e_id]
             e_url = self.id2url[e_id]
+            wikipedia_id = e_url.split("curid=")[-1]
+            wikidata_id = self.wikipedia_to_wikidata_mapper.get(wikipedia_id, e_id)
             entities.append((e_id, e_title, e_text, e_url))
-            linked_entity = LinkedEntity(entity=sample["mention"], id=f"Q{e_id}", label=sample["label"],
+            linked_entity = LinkedEntity(entity=sample["mention"], id=wikidata_id, label=sample["label"],
                                          description=e_text)
             event_arguments.append(linked_entity)
         return EventArgumentExtractorOutput(tweet=text, event_arguments=event_arguments)
@@ -140,5 +150,5 @@ class BLINKEntityLinker(Linker):
 
 if __name__ == "__main__":
     test = BLINKEntityLinker()
-    text = input("insert text:")
+    text = "A preliminary 6.20 magnitude #earthquake has occurred near Taft, Eastern Visayas, #Philippines." #input("insert text:")
     print(test.forward(text))
