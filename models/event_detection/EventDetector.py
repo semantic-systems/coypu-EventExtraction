@@ -229,7 +229,8 @@ class GdeltFunctions:
         #             time_object = datetime.strptime(timestamp, "%Y%m%dT%H%M%SZ")
         #             if timeline[i] <= time_object < timeline[i+1]:
         #                 timeline_count[timeline[i].strftime("%Y-%m-%d %H:%M:%S")] += 1
-
+        if not english_articles:
+            description = ""
         return data, description
 
     # stolen from previous code ;)
