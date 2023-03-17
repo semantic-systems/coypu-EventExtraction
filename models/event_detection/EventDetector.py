@@ -215,13 +215,13 @@ class GdeltFunctions:
         articles = self.api.article_search(f)
         try:
             english_articles = articles[articles['language'] == lang]
+            description = f"{len(articles)} articles found with the keyword {query}, among which {len(english_articles)} articles are in English.\n"
+            # timestamp = [datetime.strftime(date, "%Y%m%dT%H%M%SZ") for date in english_articles["seendate"].values]
+            data["title"] = [self.clean_feed(title) for title in english_articles['title'].values]
+            data["timestamp"] = english_articles["seendate"].values
+            data["url"] = english_articles["url"].values
         except:
             english_articles = []
-        description = f"{len(articles)} articles found with the keyword {query}, among which {len(english_articles)} articles are in English.\n"
-        # timestamp = [datetime.strftime(date, "%Y%m%dT%H%M%SZ") for date in english_articles["seendate"].values]
-        data["title"] = [self.clean_feed(title) for title in english_articles['title'].values]
-        data["timestamp"] = english_articles["seendate"].values
-        data["url"] = english_articles["url"].values
         # midnight = datetime.combine(datetime.today(), datetime.min.time())
         # yesterday_midnight = midnight - timedelta(days=1)
         # timeline = [dt for dt in self.datetime_range(yesterday_midnight, midnight, timedelta(minutes=15))]
@@ -234,6 +234,7 @@ class GdeltFunctions:
         #                 timeline_count[timeline[i].strftime("%Y-%m-%d %H:%M:%S")] += 1
         if len(english_articles) == 0:
             description = ""
+            data["title"] = []
         return data, description
 
     # stolen from previous code ;)
