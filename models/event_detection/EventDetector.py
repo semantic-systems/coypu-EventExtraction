@@ -76,7 +76,7 @@ class EventDetector(BaseComponent):
         wikidata_link = EVENT_TYPE_WIKIDATA_LINKS.get(event_type)
         return EventDetectorOutput(tweet=tweet, event_type=event_type, wikidata_link=wikidata_link)
 
-    def forward_batch(self, data: dict) -> Tuple:
+    def forward_batch(self, data: dict) -> str:
         sentences = data["title"]
         tokenized_text = self.model.tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
         input_ids: tensor = tokenized_text["input_ids"].to(self.model.device)
