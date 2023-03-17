@@ -78,6 +78,9 @@ class EventDetector(BaseComponent):
 
     def forward_batch(self, data: dict) -> str:
         sentences = data["title"]
+        if not sentences:
+            description = f"No English articles found with the provided keywords!\n"
+            return description
         tokenized_text = self.model.tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
         input_ids: tensor = tokenized_text["input_ids"].to(self.model.device)
         attention_masks: tensor = tokenized_text["attention_mask"].to(self.model.device)
@@ -97,11 +100,9 @@ class EventDetector(BaseComponent):
         labels = db.labels_
         df["clustered label"] = labels
         df["clustered label"] = df["clustered label"].astype(str)
-        fig_cls = px.scatter(df, x="PC 1", y="PC 2", color="event type", hover_data=['sentences', "url"],
-                 width=1000, height=700)
+        fig_cls = px.scatter(df, x="PC 1", y="PC 2", color="event type", hover_data=['sentences', "url"]) #,width=1000, height=700)
         fig_cls.update_traces(marker_size=15)
-        fig_cluster = px.scatter(df, x="PC 1", y="PC 2", color="clustered label", hover_data=['sentences', "url"],
-                 width=1065, height=700)
+        fig_cluster = px.scatter(df, x="PC 1", y="PC 2", color="clustered label", hover_data=['sentences', "url"]) #, width=1065, height=700)
         fig_cluster.update_traces(marker_size=15)
         # Number of clusters in labels, ignoring noise if present.
         n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
@@ -134,9 +135,9 @@ class EventDetector(BaseComponent):
             margin=dict(l=80, r=80, t=80, b=80),
             paper_bgcolor="white"
         )
-        description = f"Estimated number of clusters: {n_clusters_}\n"
         fig_cls.write_json("./fig_cls.json")
         fig_cluster.write_json("./fig_cluster.json")
+        description = f"Estimated number of clusters: {n_clusters_}\n"
         return description
 
     def reduce_with_PCA(self, features):
