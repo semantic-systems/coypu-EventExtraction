@@ -201,8 +201,8 @@ class GdeltFunctions:
         if query == '':
             query = ""
 
-        start_date = datetime.today() # - timedelta(1)
-        end_date = datetime.today() - timedelta(1)
+        start_date = datetime.today() - timedelta(1)
+        end_date = datetime.today() #- timedelta(1)
         f = Filters(
             keyword=query,
             start_date=start_date.strftime('%Y-%m-%d'),
