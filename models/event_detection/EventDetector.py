@@ -4,6 +4,7 @@ import gdown
 import gradio as gr
 import pandas as pd
 import plotly
+import requests
 import torch
 from torch import tensor
 from typing import Optional, Tuple
@@ -21,7 +22,7 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from gdeltdoc import GdeltDoc, Filters
 from typing import Dict, Union, List
-
+import numpy as np
 
 State = Union[None, Dict[str, Union[str, Dict, List]]]
 logging.set_verbosity_error()
@@ -142,6 +143,23 @@ class EventDetector(BaseComponent):
 
     def reduce_with_PCA(self, features):
         return self.pca.fit_transform(features)
+
+    @staticmethod
+    def call_instructor(sentence: List) -> np.array:
+        headers = {
+            'Content-Type': 'application/json',
+        }
+
+        payload = {
+            "instruction": "Represent the News titles for event clustering: ",
+            "sentence": sentence,
+            "key": "B48KSZDAXDQT1NX2"
+        }
+
+        response = requests.post('https://instructor.skynet.coypu.org', headers=headers, json=payload).json().get(
+            "embeddings", None)
+        embeddings = np.asarray(response)
+        return embeddings
 
     @property
     def __version__(self):
