@@ -105,5 +105,5 @@ class RDFGenerator(object):
     @staticmethod
     def get_date_time() -> str:
         now = datetime.now()
-        dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
+        dt_string = now.strftime("%Y-%m-%dT%H:%M:%SZ")
         return dt_string
