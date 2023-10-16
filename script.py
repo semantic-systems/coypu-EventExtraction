@@ -30,11 +30,23 @@ event_extractor = EventExtractor(event_detector=event_detector, event_argument_e
 
 @app.route('/', methods=['POST'])
 def flask():
+    responses = {'error': 'undefined'}
+    http_code = 418
+    authenticated = False
+
+    if 'key' in request.json:
+        key = request.json['key']
+        if (key == '32T82GWPSGDJTKFN'): authenticated = True
+
+    if (authenticated == False):
+        responses = {'error': 'no valid API key'}
+        http_code = 401
+
     if not request.json or not 'message' in request.json:
-        print(request.json)
         abort(400)
 
-    message = request.json['message']
+
+message = request.json['message']
 
     output = event_extractor.infer(message)
 
