@@ -46,7 +46,7 @@ def flask():
         abort(400)
 
 
-message = request.json['message']
+    message = request.json['message']
 
     output = event_extractor.infer(message)
 
