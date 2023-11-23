@@ -57,7 +57,7 @@ class EventDetector(BaseComponent):
         labels = None
         input_feature: InputFeature = InputFeature(input_ids=input_ids, attention_mask=attention_masks, labels=labels)
         output: SingleLabelClassificationForwardOutput = self.model.forward(input_feature, "test")
-        prediction = output.prediction_logits.argmax(dim=0, keepdim=True).item()
+        prediction = output.prediction_logits.argmax(dim=0, keepdim=True).tolist()
         event_type = list(map(lambda x: self.index_label_map[str(x)], prediction))
         wikidata_link = list(map(lambda x: EVENT_TYPE_WIKIDATA_LINKS[x], event_type))
         return EventDetectorOutput(tweet=tweet, event_type=event_type, wikidata_link=wikidata_link)
