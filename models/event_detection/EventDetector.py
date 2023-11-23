@@ -4,7 +4,7 @@ from pathlib import Path
 import gdown
 import torch
 from torch import tensor
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 from dataclasses import dataclass
 from schemes import EventDetectorOutput
 from models import BaseComponent
@@ -50,7 +50,7 @@ class EventDetector(BaseComponent):
         self.index_label_map = checkpoint['index_label_map']
         self.model.to(self.device)
 
-    def forward(self, tweet: str) -> EventDetectorOutput:
+    def forward(self, tweet: Union[list, str]) -> EventDetectorOutput:
         tokenized_text = self.model.tokenizer(tweet, padding=True, truncation=True, return_tensors="pt")
         input_ids: tensor = tokenized_text["input_ids"].to(self.model.device)
         attention_masks: tensor = tokenized_text["attention_mask"].to(self.model.device)
@@ -58,8 +58,8 @@ class EventDetector(BaseComponent):
         input_feature: InputFeature = InputFeature(input_ids=input_ids, attention_mask=attention_masks, labels=labels)
         output: SingleLabelClassificationForwardOutput = self.model.forward(input_feature, "test")
         prediction = output.prediction_logits.argmax(1).item()
-        event_type = self.index_label_map[str(prediction)]
-        wikidata_link = EVENT_TYPE_WIKIDATA_LINKS.get(event_type)
+        event_type = list(map(lambda x: self.index_label_map[str(x)], prediction))
+        wikidata_link = list(map(lambda x: EVENT_TYPE_WIKIDATA_LINKS[x], event_type))
         return EventDetectorOutput(tweet=tweet, event_type=event_type, wikidata_link=wikidata_link)
 
     @property

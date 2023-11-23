@@ -22,22 +22,30 @@ class EventExtractor(object):
         self.event_detector = event_detector
         self.event_argument_extractor = event_argument_extractor
 
-    def extract_per_tweet(self, tweet: str) -> EventExtractorOutput:
-        event_detector_output: EventDetectorOutput = self.event_detector.forward(tweet)
-        event_argument_extractor_output: EventArgumentExtractorOutput = self.event_argument_extractor.forward(tweet)
-        rdf_graph = RDFGenerator().convert(event_detector_output, event_argument_extractor_output)
+    def extract_per_batch(self, tweets: List[str]) -> EventExtractorOutput:
+        if isinstance(tweets, list):
+            first_tweets = tweets[0]
+        elif isinstance(tweets, str):
+            first_tweets = tweets
+        else:
+            raise TypeError("Tweets must be in list or str.")
+        event_detector_output: EventDetectorOutput = self.event_detector.forward(tweets)
+        event_argument_extractor_output: EventArgumentExtractorOutput = self.event_argument_extractor.forward(first_tweets)
+        first_event_detector_output = event_detector_output
+        first_event_detector_output.tweet = first_event_detector_output.tweet[0]
+        first_event_detector_output.event_type = first_event_detector_output.event_type[0]
+        first_event_detector_output.wikidata_link = first_event_detector_output.wikidata_link[0]
+        rdf_graph = RDFGenerator().convert(first_event_detector_output, event_argument_extractor_output)
+
         return EventExtractorOutput(
-            tweet=tweet,
+            tweet=tweets,
             event_type=event_detector_output.event_type,
             event_arguments=event_argument_extractor_output.event_arguments,
             event_graph=rdf_graph
         )
 
-    def extract_per_batch(self, tweets: List[str]) -> List[EventExtractorOutput]:
-        pass
-
-    def infer(self, tweet: str) -> tuple:
-        output: EventExtractorOutput = self.extract_per_tweet(tweet)
+    def infer(self, tweets: List[str]) -> tuple:
+        output: EventExtractorOutput = self.extract_per_batch(tweets)
         return output.event_type, output.event_arguments, output.event_graph
 
 
