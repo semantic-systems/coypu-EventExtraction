@@ -30,6 +30,7 @@ class EventExtractor(object):
         else:
             raise TypeError("Tweets must be in list or str.")
         event_detector_output: EventDetectorOutput = self.event_detector.forward(tweets)
+        event_types = event_detector_output.event_type
         event_argument_extractor_output: EventArgumentExtractorOutput = self.event_argument_extractor.forward(first_tweets)
         first_event_detector_output = event_detector_output
         first_event_detector_output.tweet = first_event_detector_output.tweet[0]
@@ -39,7 +40,7 @@ class EventExtractor(object):
 
         return EventExtractorOutput(
             tweet=tweets,
-            event_type=event_detector_output.event_type,
+            event_type=event_types,
             event_arguments=event_argument_extractor_output.event_arguments,
             event_graph=rdf_graph
         )
